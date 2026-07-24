@@ -1,0 +1,36 @@
+{
+  "summary": "Iteration 1 (Home + Game 1: Find the Object) — frontend-only mobile-web test on Expo web preview at mobile viewport (375x667). All 13 required flows PASSED functionally: title renders, 5 cards present with correct testIDs, only 'Find the Object' navigates (other 4 stay on Home / do not navigate), game screen exposes all required testIDs (game-back-button, game-restart-button, game-home-button, target-label, objects-grid, object-tile-*, progress-indicator, progress-count), tile counts match spec (L1=4, L2=6, L3=8), correct tap advances progress-count (0/3 → 3/3), wrong tap does NOT advance progress and does NOT crash (penalty-free), success-dialog appears after 3 rounds with success-stars/success-next-button (L1,L2)/success-restart-button/success-home-button, Level 3 success has NO next button (correct), Next Level navigates to correct level with more tiles, Home button returns to Home, restart resets to Level 1, no network calls to any API (fully offline), no console errors, no red-screen. Audio hook wired via expo-audio without errors on tap. Only warnings observed are React-Native-Web 'shadow*' style deprecation notices (non-blocking).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "SuccessDialog->Home", "issues": ["When success-home-button is pressed, the Modal portal briefly keeps the dialog mounted while router.replace('/') mounts Home, resulting in two DOM nodes with data-testid='app-title' for a short moment. Not visually broken but suggests setShowSuccess(false) should be called before router.replace('/'), or Modal should be closed on unmount of find-object screen."]}
+    ],
+    "react_native_issues": [
+      {"component": "shadows.soft / shadows.softer", "issue": "React-Native-Web warns: '\"shadow*\" style props are deprecated. Use \"boxShadow\".' Fires from GameCard, SuccessDialog, PrimaryButton, ObjectTile via tokens.shadows. Reference: /app/frontend/src/theme/tokens.ts:80-95. Consider migrating to boxShadow for web parity (RN 0.75+/RN-Web supports boxShadow). Non-blocking."},
+      {"component": "src/storage/progress.ts", "issue": "storage.setItem<Value extends StorageItemValue> only accepts string|number|boolean|null, but progress.ts stores GameProgress objects via storage.setItem(key(id), next) (line 46) and storage.setItem(key(id), { ...current, timesPlayed: ... }) (line 52). Runtime works because Storage internally JSON.stringify's, but this violates the type contract. Either widen StorageItemValue in /app/frontend/src/utils/storage/storage-base.ts to include object shapes, or serialize to string in progress.ts before setItem. Reference: /app/frontend/src/storage/progress.ts:46,52."}
+    ]
+  },
+  "test_report_links": ["/tmp/home.png", "/tmp/game_l1.png", "/tmp/success_l1.png", "/tmp/success_l3.png"],
+  "action_items": [
+    "(Optional/polish) Migrate the shadows.* tokens from shadow*/elevation to boxShadow to silence RN-Web deprecation warnings on web preview.",
+    "(Type safety) Either widen StorageItemValue to allow serializable objects, or serialize/deserialize GameProgress explicitly in /app/frontend/src/storage/progress.ts. Runtime is unaffected but the type contract is currently being bypassed.",
+    "(Nice-to-have) In find-object.tsx `goHome`, call setShowSuccess(false) before router.replace('/') so the Modal portal unmounts before Home mounts (removes the transient duplicate app-title node)."
+  ],
+  "critical_code_review_comments": [
+    "app/games/find-object.tsx (334 lines) is comfortably under the 700-line split threshold and is well-structured; computeStars is a pure exported function per PRD.",
+    "No hardcoded URLs; no backend calls made — fully offline as intended.",
+    "All interactive elements have testID (GameCard, GameTopBar buttons, SuccessDialog buttons, ObjectTile, ProgressIndicator).",
+    "All text is wrapped in <Text> components; no raw strings observed.",
+    "useSoundEffects gracefully swallows audio failures — good for silent web preview.",
+    "Progress persistence layer is asynchronous with silent failure handling (.catch(()=>{})) so a storage error can never break gameplay."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100% (13/13 required flows)"},
+  "seed_data_creation": "None required; all data is bundled (OBJECTS catalog + WAV assets).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Home + Game 1 verified end-to-end on Web preview at mobile viewport 375x667. Reuse the flow: (1) load /, assert app-title & 5 game-card-* testIDs; (2) tap game-card-count-animals -> must remain on home; (3) tap game-card-find-object -> objects-grid appears; (4) for each level assert tile counts 4/6/8; (5) find correct tile via aria-label matching target-label text, click, verify progress-count increments; (6) after 3 rounds assert success-dialog + success-stars/success-*-button visibility; (7) success-next-button only present on L1/L2; (8) success-home-button returns to home. Audio is silent on web — do not assert audio playback, only that no errors are thrown. AsyncStorage on web uses IndexedDB RKStorage / catalystLocalStorage — persistence assertions in the browser layer are optional.",
+  "rca_of_issue": "No functional issues to RCA. Two low-severity code-quality observations: (a) shadow* deprecation warning originates from tokens.shadows on web; (b) storage.setItem is being called with object values while the type contract is StorageItemValue (primitive) — silent runtime pass because Storage internally JSON.stringify's, but should be tightened."
+}
