@@ -109,7 +109,7 @@ export default function ShapePuzzleScreen() {
       <SafeAreaView style={styles.safe} edges={["top", "bottom", "left", "right"]}>
         <GameTopBar
           title={`Level ${level}`}
-          onHome={() => { playSound("button"); router.replace("/"); }}
+          onHome={() => { playSound("button"); setShowSuccess(false); router.replace("/"); }}
           onRestart={() => { playSound("button"); startLevel(1); }}
           onBack={() => { playSound("button"); router.back(); }}
         />

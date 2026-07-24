@@ -63,7 +63,7 @@ export default function CountAnimalsScreen() {
   }, []);
 
   const restart = () => { playSound("button"); startLevel(1); };
-  const goHome = () => { playSound("button"); router.replace("/"); };
+  const goHome = () => { playSound("button"); setShowSuccess(false); router.replace("/"); };
 
   const handlePick = (n: number) => {
     if (n === round.count) {

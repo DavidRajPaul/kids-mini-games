@@ -1,41 +1,37 @@
-# Ezra Brain Games — PRD
+# Ezra Brain Games — Product Requirements
 
-## Product Vision
-An offline, calming educational app for children ages 4–6 that trains observation, logical thinking, pattern recognition, counting, spatial awareness, problem solving, memory, and fine motor skills. No ads, no login, no purchases, no dopamine loops.
+## Overview
+Ezra Brain Games is a **fully offline** educational app for children aged 4–6, built with Expo + React Native.
+No ads, no login, no tracking, no purchases, no notifications. Calm learning only.
 
-## Platform
-- Expo (React Native) SDK 54
-- iOS + Android + Web preview
-- Offline-only, local storage via AsyncStorage (`@/src/utils/storage`)
+## Features
+- **Home screen** with 6 game cards, a Progress card, and calm pastel design
+- **Game 1 — Find the Object**: 3 levels (4/6/8 objects), 3 rounds each, randomized layouts
+- **Game 2 — Count the Animals**: 3 levels (max count 4/6/10), 3 rounds each, 3 number options
+- **Game 3 — Bigger or Smaller**: 3 levels (gap 5/3/1), size-scaled illustrations, random "Bigger?"/"Smaller?"
+- **Game 4 — Same or Different**: 3 levels, 4 rounds each; L3 uses subtle color shifts on same icon
+- **Game 5 — Shape Puzzle**: 3 levels (3/4/5 shapes), true drag-and-drop with snap animation, dashed silhouette drop zone
+- **Game 6 — Tic Tac Toe**: 2-player pass-and-play, running score (X, O, Draws), winning line highlighted
+- **Progress screen**: totals of stars + plays, per-game rows with level, plays, and stars; Reset Progress
 
-## Design
-- Soft pastel palette (Soft Blue, Soft Green, Pastel Orange, Pastel Yellow, Pastel Pink, Pastel Purple)
-- Chunky rounded cards, 48pt touch targets, large readable typography
-- Subtle animations (150ms press, 250ms fade, 200ms scale, 300ms snap)
-- Vector icons only (MaterialCommunityIcons)
+## Design System
+- Soft pastels only (Soft Blue, Soft Green, Pastel Orange, Pastel Yellow, Pastel Pink, Pastel Purple)
+- 48pt+ touch targets, generous spacing (8pt grid), rounded corners (24pt cards)
+- Subtle animations only (150/200/250/300 ms) via react-native-reanimated
+- MaterialCommunityIcons throughout — no AI illustrations
+- Custom soft sound effects (tap, button, correct, wrong, star, complete) synthesized locally as WAV files
 
-## Audio
-Six locally bundled soft WAV files generated with Python sine synthesis: tap, button, correct, wrong, star, complete. Played via `expo-audio`.
+## Storage
+- All progress stored locally via `@/src/utils/storage` (AsyncStorage)
+- Per game: highestLevel, timesPlayed, starsEarned, completed
+- No cloud sync, no analytics
 
-## Screens Implemented (Iteration 1)
-1. **Home** — Ezra Brain Games title + 5 game cards (Find the Object, Count the Animals, Bigger or Smaller, Same or Different, Shape Puzzle). 4 of 5 marked "Coming soon".
-2. **Game 1 — Find the Object**
-   - Level 1: 4 objects, Level 2: 6, Level 3: 8
-   - 3 rounds per level, randomized layout
-   - Correct tap → gentle chime + advance
-   - Wrong tap → gentle down-note + retry (no penalty)
-   - Success dialog with 3-star rating (0 wrong = 3★, 1–2 wrong = 2★, 3+ wrong = 1★)
-   - Home / Restart / Back top bar
-   - Progress persisted per-game (highest level, times played, stars, completed)
+## Architecture
+- Modular by game: each game lives in `/app/games/<name>.tsx`
+- Reusable components in `/src/components/` (GameCard, GameTopBar, SuccessDialog, ProgressIndicator, PrimaryButton, QuestionText, GameBackground)
+- Data catalogs in `/src/data/` (objects, animals, sizes, compare, shapes)
+- Audio hook in `/src/audio/useSoundEffects.ts`
+- Design tokens in `/src/theme/tokens.ts`
 
-## Reusable Components
-`PrimaryButton`, `GameCard`, `GameTopBar`, `SuccessDialog`, `ProgressIndicator`, `QuestionText`, `GameBackground`.
-
-## Screens Pending (future iterations)
-- Game 2: Count the Animals
-- Game 3: Bigger or Smaller
-- Game 4: Same or Different
-- Game 5: Shape Puzzle (drag-and-drop with react-native-gesture-handler)
-
-## Non-Goals
-No auth, no analytics, no notifications, no in-app purchase, no coins/gems/energy, no time pressure, no penalties.
+## Integrations
+- None. Fully offline. No LLMs, no auth, no backend.
