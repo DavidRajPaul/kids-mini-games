@@ -2,6 +2,9 @@ import { storage } from "@/src/utils/storage";
 
 /**
  * Local progress storage. Fully offline, no cloud sync, no analytics.
+ *
+ * Stored as a JSON string under `ezra.progress.<gameId>` to keep the
+ * underlying storage helper's primitive-only contract clean.
  */
 
 export type GameId =
@@ -27,9 +30,24 @@ const DEFAULT: GameProgress = {
 
 const key = (id: GameId) => `ezra.progress.${id}`;
 
+function parse(raw: string | null): GameProgress {
+  if (!raw) return DEFAULT;
+  try {
+    const value = JSON.parse(raw) as Partial<GameProgress>;
+    return {
+      highestLevel: value.highestLevel ?? DEFAULT.highestLevel,
+      timesPlayed: value.timesPlayed ?? DEFAULT.timesPlayed,
+      starsEarned: value.starsEarned ?? DEFAULT.starsEarned,
+      completed: value.completed ?? DEFAULT.completed,
+    };
+  } catch {
+    return DEFAULT;
+  }
+}
+
 export async function getProgress(id: GameId): Promise<GameProgress> {
-  const saved = await storage.getItem<GameProgress>(key(id), DEFAULT);
-  return saved ?? DEFAULT;
+  const raw = await storage.getItem<string | null>(key(id), null);
+  return parse(raw);
 }
 
 export async function saveProgress(
@@ -39,15 +57,18 @@ export async function saveProgress(
   const current = await getProgress(id);
   const next: GameProgress = {
     highestLevel: Math.max(current.highestLevel, patch.highestLevel ?? current.highestLevel),
-    timesPlayed: (patch.timesPlayed ?? current.timesPlayed),
+    timesPlayed: patch.timesPlayed ?? current.timesPlayed,
     starsEarned: Math.max(current.starsEarned, patch.starsEarned ?? current.starsEarned),
     completed: current.completed || patch.completed || false,
   };
-  await storage.setItem(key(id), next);
+  await storage.setItem(key(id), JSON.stringify(next));
   return next;
 }
 
 export async function bumpTimesPlayed(id: GameId): Promise<void> {
   const current = await getProgress(id);
-  await storage.setItem(key(id), { ...current, timesPlayed: current.timesPlayed + 1 });
+  await storage.setItem(
+    key(id),
+    JSON.stringify({ ...current, timesPlayed: current.timesPlayed + 1 }),
+  );
 }

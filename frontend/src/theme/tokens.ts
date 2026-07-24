@@ -79,17 +79,11 @@ export const typography = {
 
 export const shadows = {
   soft: {
-    shadowColor: "#1A365D",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.08,
-    shadowRadius: 14,
+    boxShadow: "0px 6px 14px rgba(26, 54, 93, 0.08)",
     elevation: 4,
   },
   softer: {
-    shadowColor: "#1A365D",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
+    boxShadow: "0px 3px 8px rgba(26, 54, 93, 0.06)",
     elevation: 2,
   },
 } as const;

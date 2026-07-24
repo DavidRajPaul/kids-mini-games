@@ -76,6 +76,7 @@ export default function FindObjectScreen() {
 
   const goHome = useCallback(() => {
     playSound("button");
+    setShowSuccess(false);
     router.replace("/");
   }, [playSound, router]);
 
