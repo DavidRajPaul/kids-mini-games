@@ -1,0 +1,119 @@
+{
+  "app_name": "Ezra Brain Games",
+  "personality": "4 Tactile / Playful LIGHT (Toned down for calm, pastel, peaceful kids UI)",
+  "personality_one_liner": "A gentle, tactile, and peaceful learning environment that encourages curiosity without overstimulation.",
+  "color": {
+    "surface": "#F7FAFC",
+    "onSurface": "#2D3748",
+    "surfaceSecondary": "#FFFFFF",
+    "onSurfaceSecondary": "#2D3748",
+    "surfaceTertiary": "#EDF2F7",
+    "onSurfaceTertiary": "#4A5568",
+    "surfaceInverse": "#2D3748",
+    "onSurfaceInverse": "#F7FAFC",
+    "brand": "#A0C4FF",
+    "brandPrimary": "#A0C4FF",
+    "onBrandPrimary": "#0F2A4A",
+    "brandSecondary": "#9FD3C7",
+    "onBrandSecondary": "#113328",
+    "brandTertiary": "#FFD6A5",
+    "onBrandTertiary": "#4A2C11",
+    "success": "#CAFFBF",
+    "onSuccess": "#113814",
+    "warning": "#FDFFB6",
+    "onWarning": "#4A3A00",
+    "error": "#FFADAD",
+    "onError": "#4A1111",
+    "info": "#A0C4FF",
+    "onInfo": "#0F2A4A",
+    "border": "#E2E8F0",
+    "borderStrong": "#CBD5E0",
+    "divider": "#EDF2F7"
+  },
+  "typography": {
+    "displayFontFamily": "Fredoka",
+    "textFontFamily": "Nunito",
+    "scale": {
+      "sm": 14,
+      "base": 18,
+      "lg": 22,
+      "xl": 28,
+      "2xl": 36
+    }
+  },
+  "spacing": {
+    "rule": "Generous touch targets (48dp min), comfortable breathing room between games, and clear grouping. Safe areas are non-negotiable.",
+    "xs": 8,
+    "sm": 12,
+    "md": 16,
+    "lg": 24,
+    "xl": 32,
+    "2xl": 48,
+    "3xl": 64
+  },
+  "radius_tokens": {
+    "sm": 12,
+    "md": 16,
+    "lg": 24,
+    "pill": 999
+  },
+  "shadow_tier": 2,
+  "navigation": "stack_only",
+  "icon_set": "MaterialCommunityIcons",
+  "glassmorphism": {
+    "enabled": false,
+    "do's": [],
+    "dont's": ["Do not use glass UI for kids educational apps; solid tactile shapes are better for cognition."]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "expo-glass-effect",
+      "android": "expo-blur",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "blur": "expo-blur",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler"
+  },
+  "screens": [
+    {
+      "name": "Home",
+      "purpose": "Displays the 5 main learning games as large, friendly cards with clear vector icons.",
+      "states": {
+        "loading": "Centered soft pulsing brand colored shape (no spinner).",
+        "empty": "No empty state needed as games are static.",
+        "error": "Friendly 'Oops!' character icon with a gentle 'Try again' button."
+      },
+      "layout": "A scrollable vertical stack of 5 large cards (width: 100% minus 32px padding). Each card is chunky (shadow 2, radius lg) featuring a left-aligned large vector icon inside a tinted rounded square (brandTertiary), followed by the title (xl), and a gentle chevron on the right. A prominent Title at the top."
+    },
+    {
+      "name": "Game Screen (Generic)",
+      "purpose": "The focused environment for any of the 5 mini-games.",
+      "states": {
+        "loading": "Soft pulsating screen.",
+        "empty": "N/A",
+        "error": "Soft error icon with retry."
+      },
+      "layout": "Top bar: Home (left), Restart (right), Back (if nested). All buttons are min 48x48pt circular icon buttons. Content area is vertically centered. Uses large vector symbols for elements (animals, shapes). Correct answers trigger a soft 200ms scale pop and success sound. Calm progress indicator (stars or gentle progress bar) at the bottom."
+    }
+  ],
+  "images": {
+    "home_header_decoration": {
+      "url": "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "dark": "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "alt": "Soft abstract pastel blocks as a subtle header accent"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Strictly avoid AI illustrations as requested; use MaterialCommunityIcons exclusively and make them large and tactile.",
+    "Ensure every tappable element is at least 48x48dp to support young kids' fine motor skills.",
+    "Implement slow, subtle animations (150ms button press, 250ms fade, 200ms scale, 300ms puzzle snap) using react-native-reanimated. Avoid fast bounces or screen shakes.",
+    "Typography must use large, readable, friendly fonts like Fredoka for display and Nunito for text. Ensure high contrast.",
+    "Never use neon colors or bright alerts. Rely on the soft pastels provided: Soft Blue, Soft Green, Pastel Orange, Pastel Yellow.",
+    "All sound feedback should be soft and calming. No loud cheers or buzzers.",
+    "Maintain a minimal, clean layout. Do not add gamification mechanics like timers, streaks, or penalties.",
+    "For cards: create a chunky tactile feel with a gentle shadow (shadow tier 2) and generous corner radii (24px)."
+  ]
+}
