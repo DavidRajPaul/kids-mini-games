@@ -1,0 +1,35 @@
+{
+  "summary": "Iteration 2 — frontend-only Expo web mobile-preview (390x844) test covering Games 2–6 + Progress screen (Home + Game 1 already covered in iteration_1). Results: (1) Home renders app-title, progress-card, progress-open-button, and all 6 game-card-* tiles. (2) Count-the-Animals: target-label shows animal plural ('How many <plural>?'), 3 count-option-N buttons render, correct pick advances rounds (verified 3 rounds → success-dialog with success-stars + success-next-button + success-home-button + success-restart-button). (3) Bigger-or-Smaller: question randomizes between 'Bigger?' and 'Smaller?' (both observed in one level), size-tile-<id> pair renders. NOTE: test loop did not always reach the 3rd success dialog because after a wrong first pick the label does not change and the loop cycles options — this is a test-flow limitation, NOT a game bug (round-advance and wrong-mark logic look correct in code). (4) Shape-Puzzle: silhouette, shape-tray, target-label, and 3 shape-tile-<id> tiles render correctly (visual verification only per instructions — drag-and-drop uses Gesture.Pan which does not fire from headless mouse events). (5) Tic-Tac-Toe: after sequence X0,O3,X1,O4,X2 banner shows 'Player X wins!', ttt-play-again is visible, and winning cells [0,1,2] have highlight background rgb(254,255,222) (pastelYellowTint) while non-winning cells have rgb(237,242,247). Play Again resets board (cell-0 icon-children=0) and keeps score-x=1. Top-bar game-restart-button on TTT also resets the board and keeps score. (6) Progress screen: total-stars=0 and total-plays=1 rendered from AsyncStorage after playing Shape Puzzle in-session. All 5 progress-row-<id> rows render (find-object, count-animals, bigger-smaller, same-different, shape-puzzle); Tic-Tac-Toe is intentionally excluded per code (no row rendered). Reset Progress (progress-clear-button) visible. Every game screen exposes game-home-button / game-restart-button / game-back-button. No red-screen, no page-errors, no console errors — only the shadow* deprecation warning already reported in iteration 1.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home after SuccessDialog->Home", "issues": ["Same transient double-mount observed in iteration 1: after tapping success-home-button on a game screen, both the old game DOM tree and the newly mounted Home tree co-exist briefly, so a query for [data-testid=\"game-card-*\"] resolves to 2 nodes for a moment. Only affects test selectors, not the child experience. Recommend calling setShowSuccess(false) before router.replace('/') in every game screen (already noted for find-object.tsx; same issue in count-animals, bigger-smaller, same-different, shape-puzzle)."]}
+    ],
+    "react_native_issues": [
+      {"component": "shadows.soft / shadows.softer", "issue": "React-Native-Web deprecation warning: '\"shadow*\" style props are deprecated. Use \"boxShadow\".' Emits from tokens.shadows used by GameCard, SuccessDialog, PrimaryButton, tiles. Reference: /app/frontend/src/theme/tokens.ts (shadows block). Non-blocking; consider migrating to boxShadow for RN-Web parity."}
+    ]
+  },
+  "test_report_links": ["/tmp/final.png", "/tmp/progress.png"],
+  "action_items": [
+    "In each game screen (count-animals, bigger-smaller, same-different, shape-puzzle), call setShowSuccess(false) BEFORE router.replace('/') inside onHome / success-home-button handlers so the Modal unmounts before Home mounts (fixes transient duplicate testIDs). Same as the iteration-1 note for find-object.tsx.",
+    "(Optional) Migrate shadows.* tokens from shadow* to boxShadow to silence the RN-Web deprecation warning."
+  ],
+  "critical_code_review_comments": [
+    "All 6 game screens use consistent GameTopBar with game-home-button / game-restart-button / game-back-button, matching PRD.",
+    "Progress screen intentionally skips tic-tac-toe (progress.tsx:45,61) — verified: no progress-row-tic-tac-toe rendered.",
+    "SuccessDialog cleanly shows/hides success-next-button based on onNext prop; Level 3 correctly passes undefined so only Play Again + Home are shown.",
+    "TTT winner detection (LINES + findWinner) is pure and correctly memoised; winning-line highlight is applied via `line.includes(i)`.",
+    "Score is stored in TTT component state and is NOT reset by resetBoard(), so both ttt-play-again and top-bar game-restart-button preserve score as required.",
+    "AsyncStorage-backed progress increments per game via bumpTimesPlayed on mount — verified for shape-puzzle (0 → 1) in the session.",
+    "All interactive elements have testID (count-option-N, size-tile-<id>, compare-left/right, same-btn, different-btn, shape-tile-<id>, silhouette, shape-tray, target-label, ttt-cell-N, ttt-banner, ttt-play-again, score-x/o/draw, progress-row-<id>, total-stars, total-plays, progress-clear-button)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (fully offline app, no backend)", "frontend": "100% of required flows verified for Games 2, 3 (partial completion but core behaviour verified), 4, 5, 6 and Progress screen"},
+  "seed_data_creation": "None — all game data is bundled locally; progress uses AsyncStorage.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Fully offline Expo/React-Native web preview. Mobile viewport 390x844. Use EXPO_PUBLIC_BACKEND_URL from /app/frontend/.env (https://calm-learning-lab.preview.emergentagent.com). Wait pattern: wait for #root to have inner text > 5 chars, then wait 2500ms. When navigating from a game success dialog back Home, the modal briefly keeps the game DOM mounted → use `.locator(sel).last` and scroll_into_view_if_needed before clicking, or wait 1500-2000ms after tapping success-home-button. Games 1–5 all follow the same pattern: target-label -> options -> correct pick advances round -> after N rounds SuccessDialog appears with success-stars, success-next-button (L1/L2 only), success-restart-button, success-home-button. Game 5 (Shape Puzzle) drag-and-drop cannot be triggered from headless mouse events; verify visually only (silhouette, target-label, shape-tray with 3 shape-tile-<id>). TTT: sequence [X0,O3,X1,O4,X2] wins for X on row 0; ttt-banner shows 'Player X wins!'; cells [0,1,2] bg becomes pastelYellowTint rgb(254,255,222); Play Again + top-bar restart both preserve score-x. Progress screen intentionally excludes tic-tac-toe row (5 rows total for 5 educational games). Shadows.* CSS deprecation warning is expected on web preview.",
+  "rca_of_issue": "No functional bugs found. Only design polish: after tapping success-home-button, router.replace('/') mounts the new Home tree before the game's SuccessDialog Modal fully unmounts, causing testIDs to briefly appear twice. Fix in each game screen: `setShowSuccess(false); router.replace('/')` inside onHome and inside SuccessDialog.onHome."
+}

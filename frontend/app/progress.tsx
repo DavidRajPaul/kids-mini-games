@@ -1,0 +1,178 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Animated, { FadeInDown } from "react-native-reanimated";
+
+import { useSoundEffects } from "@/src/audio/useSoundEffects";
+import { GameBackground } from "@/src/components/GameBackground";
+import { GameTopBar } from "@/src/components/GameTopBar";
+import { PrimaryButton } from "@/src/components/PrimaryButton";
+import { GameId, GameProgress, getProgress } from "@/src/storage/progress";
+import { colors, radius, spacing, typography, shadows } from "@/src/theme/tokens";
+import { storage } from "@/src/utils/storage";
+
+const ROWS: { id: GameId | "tic-tac-toe"; title: string; icon: keyof typeof MaterialCommunityIcons.glyphMap; tint: string; iconColor: string; }[] = [
+  { id: "find-object", title: "Find the Object", icon: "magnify", tint: colors.softBlueTint, iconColor: "#1F6FEB" },
+  { id: "count-animals", title: "Count the Animals", icon: "numeric", tint: colors.softGreenTint, iconColor: "#2E8B57" },
+  { id: "bigger-smaller", title: "Bigger or Smaller", icon: "unfold-more-horizontal", tint: colors.pastelOrangeTint, iconColor: "#E58E26" },
+  { id: "same-different", title: "Same or Different", icon: "compare", tint: colors.pastelYellowTint, iconColor: "#A88A00" },
+  { id: "shape-puzzle", title: "Shape Puzzle", icon: "puzzle", tint: colors.pastelPurpleTint, iconColor: "#8E44AD" },
+];
+
+interface Row {
+  id: GameId;
+  title: string;
+  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  tint: string;
+  iconColor: string;
+  progress: GameProgress;
+}
+
+export default function ProgressScreen() {
+  const router = useRouter();
+  const playSound = useSoundEffects();
+  const [rows, setRows] = useState<Row[]>([]);
+  const [totalStars, setTotalStars] = useState(0);
+  const [totalPlayed, setTotalPlayed] = useState(0);
+
+  const load = useCallback(async () => {
+    const filled: Row[] = [];
+    let stars = 0;
+    let played = 0;
+    for (const r of ROWS) {
+      if (r.id === "tic-tac-toe") continue;
+      const progress = await getProgress(r.id as GameId);
+      filled.push({ ...r, id: r.id as GameId, progress });
+      stars += progress.starsEarned;
+      played += progress.timesPlayed;
+    }
+    setRows(filled);
+    setTotalStars(stars);
+    setTotalPlayed(played);
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const clearAll = async () => {
+    playSound("button");
+    for (const r of ROWS) {
+      if (r.id === "tic-tac-toe") continue;
+      await storage.removeItem(`ezra.progress.${r.id}`);
+    }
+    await load();
+  };
+
+  return (
+    <GameBackground>
+      <SafeAreaView style={styles.safe} edges={["top", "bottom", "left", "right"]}>
+        <GameTopBar
+          title="Your Progress"
+          onHome={() => { playSound("button"); router.replace("/"); }}
+          onRestart={clearAll}
+          onBack={() => { playSound("button"); router.back(); }}
+        />
+        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+          <Animated.View entering={FadeInDown.duration(280)} style={styles.summary}>
+            <View style={[styles.summaryTile, { backgroundColor: colors.pastelYellowTint }]}>
+              <MaterialCommunityIcons name="star" size={32} color="#E0A200" />
+              <Text style={styles.summaryValue} testID="total-stars">{totalStars}</Text>
+              <Text style={styles.summaryLabel}>Stars</Text>
+            </View>
+            <View style={[styles.summaryTile, { backgroundColor: colors.softBlueTint }]}>
+              <MaterialCommunityIcons name="gamepad-variant" size={32} color="#1F6FEB" />
+              <Text style={styles.summaryValue} testID="total-plays">{totalPlayed}</Text>
+              <Text style={styles.summaryLabel}>Plays</Text>
+            </View>
+          </Animated.View>
+
+          <View style={styles.list}>
+            {rows.map((r, idx) => (
+              <Animated.View
+                key={r.id}
+                entering={FadeInDown.delay(60 + idx * 40).duration(260)}
+                style={[styles.row, shadows.softer]}
+                testID={`progress-row-${r.id}`}
+              >
+                <View style={[styles.iconTile, { backgroundColor: r.tint }]}>
+                  <MaterialCommunityIcons name={r.icon} size={30} color={r.iconColor} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.rowTitle}>{r.title}</Text>
+                  <Text style={styles.rowMeta}>
+                    Level {r.progress.highestLevel} · Played {r.progress.timesPlayed}
+                  </Text>
+                </View>
+                <View style={styles.stars}>
+                  {[0, 1, 2].map((i) => (
+                    <MaterialCommunityIcons
+                      key={i}
+                      name={i < r.progress.starsEarned ? "star" : "star-outline"}
+                      size={20}
+                      color={i < r.progress.starsEarned ? "#E0A200" : colors.borderStrong}
+                    />
+                  ))}
+                </View>
+              </Animated.View>
+            ))}
+          </View>
+
+          <View style={styles.actionsWrap}>
+            <PrimaryButton
+              testID="progress-clear-button"
+              label="Reset Progress"
+              variant="ghost"
+              onPress={clearAll}
+            />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </GameBackground>
+  );
+}
+
+const styles = StyleSheet.create({
+  safe: { flex: 1 },
+  scroll: { padding: spacing.lg, gap: spacing.md, paddingBottom: spacing.xxl },
+  summary: {
+    flexDirection: "row",
+    gap: spacing.md,
+  },
+  summaryTile: {
+    flex: 1,
+    padding: spacing.lg,
+    borderRadius: radius.lg,
+    alignItems: "center",
+    gap: 4,
+  },
+  summaryValue: {
+    ...typography.displayLG,
+    color: colors.onSurface,
+  },
+  summaryLabel: {
+    ...typography.caption,
+    color: colors.onSurfaceMuted,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+  },
+  list: { gap: spacing.sm, marginTop: spacing.xs },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.md,
+    padding: spacing.md,
+    backgroundColor: colors.surfaceCard,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  iconTile: {
+    width: 52, height: 52, borderRadius: radius.md,
+    alignItems: "center", justifyContent: "center",
+  },
+  rowTitle: { ...typography.subtitle, color: colors.onSurface },
+  rowMeta: { ...typography.caption, color: colors.onSurfaceMuted },
+  stars: { flexDirection: "row", gap: 2 },
+  actionsWrap: { marginTop: spacing.md },
+});

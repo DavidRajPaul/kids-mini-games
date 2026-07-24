@@ -8,7 +8,7 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 import { GameBackground } from "@/src/components/GameBackground";
 import { GameCard } from "@/src/components/GameCard";
 import { useSoundEffects } from "@/src/audio/useSoundEffects";
-import { colors, spacing, typography } from "@/src/theme/tokens";
+import { colors, spacing, typography, radius, shadows } from "@/src/theme/tokens";
 
 interface GameEntry {
   id: string;
@@ -18,59 +18,62 @@ interface GameEntry {
   tint: string;
   iconColor: string;
   route: string;
-  ready: boolean;
 }
 
 const GAMES: GameEntry[] = [
   {
     id: "find-object",
     title: "Find the Object",
-    subtitle: "Spot the right item to sharpen observation",
+    subtitle: "Spot the right item",
     icon: "magnify",
     tint: colors.softBlueTint,
     iconColor: "#1F6FEB",
     route: "/games/find-object",
-    ready: true,
   },
   {
     id: "count-animals",
     title: "Count the Animals",
-    subtitle: "Count carefully and pick the right number",
+    subtitle: "Count and pick the number",
     icon: "numeric",
     tint: colors.softGreenTint,
     iconColor: "#2E8B57",
     route: "/games/count-animals",
-    ready: false,
   },
   {
     id: "bigger-smaller",
     title: "Bigger or Smaller",
-    subtitle: "Compare and choose the bigger one",
+    subtitle: "Compare two things",
     icon: "unfold-more-horizontal",
     tint: colors.pastelOrangeTint,
     iconColor: "#E58E26",
     route: "/games/bigger-smaller",
-    ready: false,
   },
   {
     id: "same-different",
     title: "Same or Different",
-    subtitle: "Look closely and tell them apart",
+    subtitle: "Look closely and choose",
     icon: "compare",
     tint: colors.pastelYellowTint,
     iconColor: "#A88A00",
     route: "/games/same-different",
-    ready: false,
   },
   {
     id: "shape-puzzle",
     title: "Shape Puzzle",
-    subtitle: "Drag shapes to their matching spot",
+    subtitle: "Drag shapes into place",
     icon: "puzzle",
     tint: colors.pastelPurpleTint,
     iconColor: "#8E44AD",
     route: "/games/shape-puzzle",
-    ready: false,
+  },
+  {
+    id: "tic-tac-toe",
+    title: "Tic Tac Toe",
+    subtitle: "Play together with a friend",
+    icon: "close-thick",
+    tint: colors.pastelPinkTint,
+    iconColor: "#D9534F",
+    route: "/games/tic-tac-toe",
   },
 ];
 
@@ -78,11 +81,14 @@ export default function HomeScreen() {
   const router = useRouter();
   const playSound = useSoundEffects();
 
-  const handleOpen = (entry: GameEntry) => {
+  const openGame = (entry: GameEntry) => {
     playSound("button");
-    if (entry.ready) {
-      router.push(entry.route as never);
-    }
+    router.push(entry.route as never);
+  };
+
+  const openProgress = () => {
+    playSound("button");
+    router.push("/progress" as never);
   };
 
   return (
@@ -100,20 +106,39 @@ export default function HomeScreen() {
             <Text style={styles.subtitle}>Calm learning games for curious minds</Text>
           </Animated.View>
 
+          <Animated.View entering={FadeInDown.delay(60).duration(280)}>
+            <View style={styles.progressCard} testID="progress-card">
+              <View style={[styles.progressTile, { backgroundColor: colors.pastelYellowTint }]}>
+                <MaterialCommunityIcons name="star" size={30} color="#E0A200" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.progressTitle}>Your Progress</Text>
+                <Text style={styles.progressSubtitle}>See stars you earned</Text>
+              </View>
+              <Text
+                testID="progress-open-button"
+                onPress={openProgress}
+                style={styles.progressCta}
+              >
+                Open ›
+              </Text>
+            </View>
+          </Animated.View>
+
           <View style={styles.list}>
             {GAMES.map((g, idx) => (
               <Animated.View
                 key={g.id}
-                entering={FadeInDown.delay(80 + idx * 60).duration(280)}
+                entering={FadeInDown.delay(120 + idx * 60).duration(280)}
               >
                 <GameCard
                   testID={`game-card-${g.id}`}
                   title={g.title}
-                  subtitle={g.ready ? g.subtitle : "Coming soon"}
+                  subtitle={g.subtitle}
                   icon={g.icon}
                   tint={g.tint}
-                  iconColor={g.ready ? g.iconColor : colors.borderStrong}
-                  onPress={() => handleOpen(g)}
+                  iconColor={g.iconColor}
+                  onPress={() => openGame(g)}
                 />
               </Animated.View>
             ))}
@@ -121,9 +146,7 @@ export default function HomeScreen() {
 
           <View style={styles.footer}>
             <MaterialCommunityIcons name="shield-check" size={18} color={colors.onSurfaceMuted} />
-            <Text style={styles.footerText}>
-              Offline · No ads · No login
-            </Text>
+            <Text style={styles.footerText}>Offline · No ads · No login</Text>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -132,13 +155,11 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-  },
+  safe: { flex: 1 },
   scroll: {
     padding: spacing.lg,
     paddingBottom: spacing.xxl,
-    gap: spacing.lg,
+    gap: spacing.md,
   },
   header: {
     alignItems: "center",
@@ -166,8 +187,41 @@ const styles = StyleSheet.create({
     color: colors.onSurfaceMuted,
     textAlign: "center",
   },
+  progressCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.md,
+    padding: spacing.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surfaceCard,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...shadows.softer,
+  },
+  progressTile: {
+    width: 56,
+    height: 56,
+    borderRadius: radius.md,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  progressTitle: {
+    ...typography.subtitle,
+    color: colors.onSurface,
+  },
+  progressSubtitle: {
+    ...typography.caption,
+    color: colors.onSurfaceMuted,
+  },
+  progressCta: {
+    ...typography.subtitle,
+    color: "#1F6FEB",
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
   list: {
     gap: spacing.md,
+    marginTop: spacing.xs,
   },
   footer: {
     flexDirection: "row",
