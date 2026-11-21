@@ -15,7 +15,7 @@ import { MagicBurst } from "@/src/components/MagicBurst";
 export type Level = 1 | 2 | 3;
 
 const tamilPrompts: Partial<Record<GameId, (level: Level) => string>> = {
-  "memory-safari": () => "குட்டி, ஒரே மாதிரி இருக்கும் அனிமல் கார்டு ரெண்டையும் மேட்ச் பண்ணு!"
+  "memory-safari": () => "குட்டி, ஒரே மாதிரி இருக்கும் அனிமல் கார்டு ரெண்டையும் மேட்ச் பண்ணு!",
   "traffic-light": (level) => level === 3 ? "ஓஹோ! இப்போ ஆப்போசிட் கேம்! ரெட் வந்தா போ, கிரீன் வந்தா நில்!" : "குட்டி, கிரீன் வந்தா போ! ரெட் வந்தா நில்! ரெடியா?",
   "what-comes-next": () => "இந்த பேட்டர்ன்ல அடுத்து என்ன வரும்னு கண்டுபிடி குட்டி!",
   "little-story-builder": () => "இந்த பிக்சர்ஸை ஒரு ஸ்டோரி மாதிரி ஆர்டர்ல வை குட்டி!",
