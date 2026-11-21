@@ -25,12 +25,13 @@ type Props = {
   title: string;
   instruction: (level: Level, round: number) => string;
   tamilInstruction?: (level: Level, round: number) => string;
+  displayInstruction?: (level: Level, round: number, language: "en" | "ta") => string;
   children: (context: { level: Level; round: number; done: (correct: boolean) => void; locked: boolean }) => React.ReactNode;
   rounds?: number;
 };
 
 /** Shared level progression. No timed pressure or punitive failure screen. */
-export function LearningGame({ id, title, instruction, tamilInstruction, children, rounds = 4 }: Props) {
+export function LearningGame({ id, title, instruction, tamilInstruction, displayInstruction, children, rounds = 4 }: Props) {
   const router = useRouter();
   const sound = useSoundEffects();
   const { language, ready, speak, stop } = useGameSpeech();
@@ -96,7 +97,7 @@ export function LearningGame({ id, title, instruction, tamilInstruction, childre
         <ScrollView contentContainerStyle={styles.content}>
           <ProgressIndicator current={round + (complete ? 1 : 0)} total={rounds} label={`Level ${level} · Round`} />
           <View style={styles.promptRow}>
-            <Text style={styles.prompt}>{spokenPrompt}</Text>
+            <Text style={styles.prompt}>{displayInstruction ? displayInstruction(level, round, language) : spokenPrompt}</Text>
             <Pressable testID="repeat-instruction" accessibilityRole="button" accessibilityLabel="Repeat spoken instruction" onPress={() => { void speak(spokenPrompt); }} style={styles.speakButton}>
               <Text style={styles.speakIcon}>🔊</Text>
             </Pressable>
