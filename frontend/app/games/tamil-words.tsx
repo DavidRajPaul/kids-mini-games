@@ -11,12 +11,12 @@ function Round({ level, round, done, locked }: {
 }) {
   const { speak } = useGameSpeech();
   const entry = level === 1 ? JOININGS[round] : level === 2 ? SINGLE_WORDS[round] : SHORT_WORDS[round];
-  const answer = level === 1 ? JOININGS[round].result : entry.glyph;
+  const answer = level === 1 ? JOININGS[round].result : level === 2 ? SINGLE_WORDS[round].glyph : SHORT_WORDS[round].glyph;
   const pool = level === 1 ? JOININGS.map(item => item.result)
     : level === 2 ? SINGLE_WORDS.map(item => item.glyph)
     : SHORT_WORDS.map(item => item.glyph);
   const options = tamilChoices(answer, pool, level === 1 ? 3 : 4, level * 3 + round);
-  const example = level === 1 ? JOININGS[round].result : entry.word;
+  const example = level === 1 ? JOININGS[round].result : level === 2 ? SINGLE_WORDS[round].word : SHORT_WORDS[round].word;
   return (
     <View style={styles.container}>
       <View style={styles.card}>
