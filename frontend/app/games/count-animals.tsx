@@ -122,7 +122,7 @@ export default function CountAnimalsScreen() {
           >
             <Text style={styles.prompt}>How many</Text>
             <QuestionText testID="target-label">{round.animal.plural}?</QuestionText>
-            <SpokenInstruction english={`How many ${round.animal.plural}?`} tamil="எத்தனை விலங்குகள் இருக்குன்னு எண்ணு!" />
+            <SpokenInstruction english={`How many ${round.animal.plural}?`} tamil="குட்டி, எத்தனை animals இருக்குன்னு count பண்ணி சொல்லு!" />
           </Animated.View>
 
           <ScrollView contentContainerStyle={styles.animalsScroll} showsVerticalScrollIndicator={false}>
