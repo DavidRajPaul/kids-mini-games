@@ -16,15 +16,15 @@ type GameEntry = {
   tint: string; route: string;
 };
 const GAMES: GameEntry[] = [
-  { id: "find-object", title: "Find It!", subtitle: "Look and find", emoji: "🔎", tint: colors.softBlueTint, route: "/games/find-object" },
-  { id: "count-animals", title: "Count Animals", subtitle: "One, two, three!", emoji: "🐘", tint: colors.softGreenTint, route: "/games/count-animals" },
-  { id: "bigger-smaller", title: "Big or Small", subtitle: "Pick the size", emoji: "🐭", tint: colors.pastelOrangeTint, route: "/games/bigger-smaller" },
-  { id: "same-different", title: "Same or Different", subtitle: "Look closely", emoji: "🧩", tint: colors.pastelYellowTint, route: "/games/same-different" },
+  { id: "letter-safari", title: "Letter Safari", subtitle: "Spot the ABCs", emoji: "🔤", tint: colors.pastelPinkTint, route: "/games/letter-safari" },
+  { id: "sound-detective", title: "Sound Detective", subtitle: "Hear it, find it", emoji: "👂", tint: colors.softBlueTint, route: "/games/sound-detective" },
+  { id: "word-magic", title: "First Word Magic", subtitle: "Build a tiny word", emoji: "🪄", tint: colors.pastelYellowTint, route: "/games/word-magic" },
   { id: "shape-puzzle", title: "Shape Puzzle", subtitle: "Fit the shapes", emoji: "🔷", tint: colors.pastelPurpleTint, route: "/games/shape-puzzle" },
   { id: "memory-safari", title: "Memory Safari", subtitle: "Find the pairs", emoji: "🦁", tint: colors.pastelPinkTint, route: "/games/memory-safari" },
+  { id: "count-animals", title: "Count Animals", subtitle: "One, two, three!", emoji: "🐘", tint: colors.softGreenTint, route: "/games/count-animals" },
   { id: "traffic-light", title: "Traffic Lights", subtitle: "Stop and go!", emoji: "🚦", tint: colors.softGreenTint, route: "/games/traffic-light" },
   { id: "what-comes-next", title: "What's Next?", subtitle: "Find the pattern", emoji: "🌟", tint: colors.softBlueTint, route: "/games/what-comes-next" },
-  { id: "little-story-builder", title: "Story Builder", subtitle: "Put pictures in order", emoji: "📖", tint: colors.pastelOrangeTint, route: "/games/little-story-builder" },
+  { id: "little-story-builder", title: "Story Builder", subtitle: "Picture stories", emoji: "📖", tint: colors.pastelOrangeTint, route: "/games/little-story-builder" },
   { id: "tic-tac-toe", title: "Tic Tac Toe", subtitle: "Play together", emoji: "⭕", tint: colors.pastelPurpleTint, route: "/games/tic-tac-toe" },
 ];
 
@@ -56,7 +56,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const sound = useSoundEffects();
   const { width } = useWindowDimensions();
-  const { language, setLanguage, speak } = useGameSpeech();
+  const { language, setLanguage, speak, voiceNotice, ready } = useGameSpeech();
   const [reduceMotion, setReduceMotion] = useState(false);
   const [focused, setFocused] = useState(false);
   useFocusEffect(useCallback(() => {
@@ -80,9 +80,9 @@ export default function HomeScreen() {
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
             <SparkleField active={focused && !reduceMotion} />
-            <Text style={styles.greeting}>👋 Hello, Ezra!</Text>
-            <Text style={styles.title} testID="app-title">Choose an adventure!</Text>
-            <Text style={styles.subtitle}>Tap a picture to play ✨</Text>
+            <Text style={styles.greeting}>👋 {language === "ta" ? "ஹாய் எஸ்ரா குட்டி!" : "Hello, Ezra!"}</Text>
+            <Text style={styles.title} testID="app-title">{language === "ta" ? "லெட்டர் மேஜிக்! ✨" : "Letter Magic World! ✨"}</Text>
+            <Text style={styles.subtitle}>{language === "ta" ? "பிடிச்ச game-ஐ டச் பண்ணு!" : "Tap a picture to play!"}</Text>
             <View style={styles.languageRow}>
               <Text style={styles.languageLabel}>Voice:</Text>
               {(["en", "ta"] as const).map(lang => (
@@ -109,7 +109,7 @@ export default function HomeScreen() {
             </View>
             <MaterialCommunityIcons name="chevron-right" size={28} color={colors.onSurface} />
           </Pressable>
-          <Text style={styles.footer}>🌈 Play at your own pace · Offline · No ads</Text>
+          <Text style={styles.footer}>{language === "ta" ? "🌈 ஜாலியா விளையாடு · Offline · Ads இல்லை" : "🌈 Play at your own pace · Offline · No ads"}</Text>
         </ScrollView>
       </SafeAreaView>
     </GameBackground>
@@ -121,6 +121,8 @@ const styles = StyleSheet.create({
   header: { alignItems: "center", gap: spacing.xs, marginTop: spacing.sm, minHeight: 180, justifyContent: "center" },
   greeting: { ...typography.subtitle, color: colors.onSurface },
   title: { ...typography.displayLG, color: colors.onSurface, textAlign: "center" },
+  sectionTitle: { ...typography.subtitle, color: colors.onSurface, textAlign: "center" },
+  voiceNotice: { ...typography.caption, color: colors.onDanger, backgroundColor: colors.dangerTint, padding: spacing.sm, borderRadius: radius.md, textAlign: "center" },
   subtitle: { ...typography.body, color: colors.onSurfaceMuted, textAlign: "center" },
   languageRow: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", justifyContent: "center", gap: spacing.sm, marginTop: spacing.sm },
   languageLabel: { ...typography.caption, color: colors.onSurfaceMuted },
