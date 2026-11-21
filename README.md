@@ -23,6 +23,10 @@ A colorful, calm collection of preschool mini-games built for Ezra (roughly ages
 | **Letter Safari** | Match scattered uppercase/lowercase letters | Visual letter identification, not ABC recitation |
 | **Sound Detective** | Hear an English example word and identify its first letter | Beginning sound–symbol mapping |
 | **First Word Magic** | Choose the missing first letter in a short regular word | Early decoding and word-building practice |
+| **உயிரெழுத்து வேட்டை** | Listen and find a vowel | All 12 Tamil vowels in three short groups |
+| **மெய்யெழுத்து மேஜிக்** | Listen and identify consonants | All 18 Tamil consonants in three groups |
+| **தமிழ் ஒலி தோட்டம்** | Hear a word and choose its starting vowel | Tamil word-to-letter sound association |
+| **தமிழ் சொல் மேஜிக்** | Join consonants and vowels, then recognise simple words | First உயிர்மெய் and short Tamil words |
 
 Games include calm sounds, levels, and large touch targets. All progress in the tracked games is stored locally. Some visual guidance is written in English; speech prompts offer English and Tamil where the device supports the necessary voices.
 
@@ -37,6 +41,19 @@ Games include calm sounds, levels, and large touch targets. All progress in the 
 - Friendly, untimed feedback, short celebratory star animations, and original bundled chime sounds work without online APIs. The parent progress screen shows per-letter first-try picks across sessions; these are practice observations, **not** a validated literacy assessment.
 
 **For grown-ups:** play together, talk about the pictures, and read aloud daily. The AAP recommends shared reading as part of a language-rich early childhood routine. See [AAP early literacy](https://www.aap.org/en/patient-care/early-childhood/early-childhood-health-and-development/early-literacy/) and [Reading Rockets phonics activities](https://www.readingrockets.org/literacy-home/reading-101-guide-parents/your-kindergartener/phonics-and-decoding-activities).
+
+## 🌸 Tamil reading journey
+
+Tamil uses **12 உயிரெழுத்துகள்**, **18 மெய்யெழுத்துகள்**, and their உயிர்மெய் combinations. Teaching all 247 symbols in one sitting is not age-appropriate. The first learning path is deliberately short and staged.
+
+1. **உயிரெழுத்து வேட்டை** — listen to a single Tamil vowel, then pick it from a few shuffled glyphs. Three levels of four vowels introduce all twelve. The optional hint reveals the glyph, and hinted answers are not counted as unaided successes.
+2. **மெய்யெழுத்து மேஜிக்** — learn six consonants at a time across வல்லினம், மெல்லினம் and இடையினம். Introduce after the easiest vowels are familiar.
+3. **தமிழ் ஒலி தோட்டம்** — see a picture, hear a familiar Tamil word such as ஆடு or இலை, and identify its starting vowel. No printed word spoils the answer.
+4. **தமிழ் சொல் மேஜிக்** — first join consonants and vowels (e.g. ப் + ஊ = பூ), then identify familiar one-syllable forms and short words such as ஆடு, எலி, இலை. This is supported early decoding, not fluent reading assessment.
+
+Tamil games use Tamil spoken prompts **even when English is selected for other game instructions**. All written prompts are Tamil. Audio comes from installed on-device Tamil TTS; a Tamil voice may need to be installed once, and human-like recording quality is not guaranteed. Offline chimes and gentle magic particles are bundled, with Reduce Motion respected. Results are stored locally; parent progress includes first-try vowel recognition counts.
+
+For parents: play for short periods, repeat letters in picture books and signs, and read aloud together. Do not rush to all consonants or word reading until the first vowels feel comfortable. The [Tamil Nadu Class 1 Tamil curriculum](https://ndl.iitkgp.ac.in/se_document/tn_school_board/12345678_tnbrd/19151) includes vowel/consonant activities; the [National Curriculum Framework (Foundational Stage)](https://ncert.nic.in/flipbook/NCF/National_Curriculum_Framework_for_Foundational_Stage_2022/files/basic-html/page114.html) and [NIPUN Bharat](https://dsel.education.gov.in/sites/default/files/update/nipun_bharat_eng_0.pdf) emphasize playful sound-to-symbol practice and home-language learning.
 
 ## ✨ Home screen
 
