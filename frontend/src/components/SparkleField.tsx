@@ -87,7 +87,7 @@ function FloatingParticle({ item, index, active }: { item: Particle; index: numb
 
   return (
     <Animated.View
-      style={[styles.particle, { left: `${item.x}%`, top: `${item.y}%` }, motion]}
+      style={[styles.particle, { left: `${item.x}%` as `${number}%`, top: `${item.y}%` as `${number}%` }, motion]}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
