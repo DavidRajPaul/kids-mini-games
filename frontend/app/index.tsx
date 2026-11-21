@@ -67,6 +67,15 @@ const GAMES: GameEntry[] = [
     route: "/games/shape-puzzle",
   },
   {
+    id: "memory-safari", title: "Memory Safari", subtitle: "Find matching animals", icon: "cards", tint: colors.softGreenTint, iconColor: "#2E8B57", route: "/games/memory-safari",
+  },
+  {
+    id: "traffic-light", title: "Traffic Light Challenge", subtitle: "Practice stop and go", icon: "traffic-light", tint: colors.pastelOrangeTint, iconColor: "#B45309", route: "/games/traffic-light",
+  },
+  {
+    id: "what-comes-next", title: "What Comes Next?", subtitle: "Complete the pattern", icon: "shape", tint: colors.pastelPurpleTint, iconColor: "#8E44AD", route: "/games/what-comes-next",
+  },
+  {
     id: "tic-tac-toe",
     title: "Tic Tac Toe",
     subtitle: "Play together with a friend",

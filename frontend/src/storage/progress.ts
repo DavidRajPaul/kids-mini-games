@@ -12,7 +12,10 @@ export type GameId =
   | "count-animals"
   | "bigger-smaller"
   | "same-different"
-  | "shape-puzzle";
+  | "shape-puzzle"
+  | "memory-safari"
+  | "traffic-light"
+  | "what-comes-next";
 
 export interface GameProgress {
   highestLevel: number; // 1..3
