@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   FadeIn,
@@ -38,12 +38,27 @@ const GAME_ID = "shape-puzzle" as const;
 interface DropZone {
   x: number;
   y: number;
-  size: number;
+  width: number;
+  height: number;
 }
 
 export default function ShapePuzzleScreen() {
   const router = useRouter();
   const playSound = useSoundEffects();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const silhouetteRef = useRef<View>(null);
+
+  // All drop coordinates must be in window space, not local parent layouts.
+  const measureDropZone = useCallback(() => {
+    silhouetteRef.current?.measureInWindow((x, y, width, height) => {
+      if (width > 0 && height > 0) setDropZone({ x, y, width, height });
+    });
+  }, []);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(measureDropZone);
+    return () => cancelAnimationFrame(frame);
+  }, [measureDropZone, windowWidth, windowHeight]);
 
   const [level, setLevel] = useState<Level>(1);
   const [roundIndex, setRoundIndex] = useState(0);
@@ -133,15 +148,10 @@ export default function ShapePuzzleScreen() {
             <QuestionText testID="target-label">{round.target.label}</QuestionText>
           </Animated.View>
 
-          <View
-            style={styles.silhouetteWrap}
-            onLayout={(e) => {
-              const { x, y, width, height } = e.nativeEvent.layout;
-              const size = Math.min(width, height);
-              setDropZone({ x: x + width / 2, y: y + height / 2, size });
-            }}
-          >
+          <View style={styles.silhouetteWrap}>
             <View
+              ref={silhouetteRef}
+              onLayout={measureDropZone}
               style={[
                 styles.silhouette,
                 { borderColor: placed ? round.target.color : colors.borderStrong },
@@ -221,27 +231,26 @@ function DraggableShape({ shape, isTarget, dropZone, disabled, onCorrect, onWron
   const translateY = useSharedValue(0);
   const scale = useSharedValue(1);
   const opacity = useSharedValue(1);
-  const originRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  const handleRelease = (finalX: number, finalY: number) => {
+  const handleRelease = (fingerX: number, fingerY: number) => {
     if (!dropZone) {
       translateX.value = withSpring(0);
       translateY.value = withSpring(0);
       return;
     }
-    // Center of the dragged tile relative to page = origin + translate + tileHalf
-    const dx = finalX - dropZone.x;
-    const dy = finalY - dropZone.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    const threshold = dropZone.size * 0.45;
+    // Pan events provide absolute finger coordinates in window space.
+    // measureInWindow gives the target in that same coordinate system.
+    // A little tolerance around the silhouette is friendlier to small fingers.
+    const tolerance = 18;
+    const inside =
+      fingerX >= dropZone.x - tolerance &&
+      fingerX <= dropZone.x + dropZone.width + tolerance &&
+      fingerY >= dropZone.y - tolerance &&
+      fingerY <= dropZone.y + dropZone.height + tolerance;
 
-    if (dist <= threshold) {
+    if (inside) {
       if (isTarget) {
-        // Snap into center: compute translation that places tile center at dropZone center.
-        const toX = dropZone.x - originRef.current.x;
-        const toY = dropZone.y - originRef.current.y;
-        translateX.value = withTiming(toX, { duration: durations.snap });
-        translateY.value = withTiming(toY, { duration: durations.snap });
+        // The silhouette displays the fitted shape; hide the released tile.
         opacity.value = withTiming(0, { duration: 250 });
         onCorrect();
       } else {
@@ -266,9 +275,7 @@ function DraggableShape({ shape, isTarget, dropZone, disabled, onCorrect, onWron
     })
     .onEnd((e) => {
       scale.value = withTiming(1, { duration: 120 });
-      const finalX = originRef.current.x + e.translationX;
-      const finalY = originRef.current.y + e.translationY;
-      runOnJS(handleRelease)(finalX, finalY);
+      runOnJS(handleRelease)(e.absoluteX, e.absoluteY);
     });
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -284,10 +291,6 @@ function DraggableShape({ shape, isTarget, dropZone, disabled, onCorrect, onWron
     <GestureDetector gesture={pan}>
       <Animated.View
         testID={`shape-tile-${shape.id}`}
-        onLayout={(e) => {
-          const { x, y, width, height } = e.nativeEvent.layout;
-          originRef.current = { x: x + width / 2, y: y + height / 2 };
-        }}
         style={[
           styles.dragTile,
           shadows.softer,
