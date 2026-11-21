@@ -19,6 +19,9 @@ const ROWS: { id: GameId | "tic-tac-toe"; title: string; icon: keyof typeof Mate
   { id: "bigger-smaller", title: "Bigger or Smaller", icon: "unfold-more-horizontal", tint: colors.pastelOrangeTint, iconColor: "#E58E26" },
   { id: "same-different", title: "Same or Different", icon: "compare", tint: colors.pastelYellowTint, iconColor: "#A88A00" },
   { id: "shape-puzzle", title: "Shape Puzzle", icon: "puzzle", tint: colors.pastelPurpleTint, iconColor: "#8E44AD" },
+  { id: "memory-safari", title: "Memory Safari", icon: "cards", tint: colors.softGreenTint, iconColor: "#2E8B57" },
+  { id: "traffic-light", title: "Traffic Light Challenge", icon: "traffic-light", tint: colors.pastelOrangeTint, iconColor: "#B45309" },
+  { id: "what-comes-next", title: "What Comes Next?", icon: "shape", tint: colors.pastelPurpleTint, iconColor: "#8E44AD" },
 ];
 
 interface Row {
