@@ -3,6 +3,7 @@ import React from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
 
 import { PrimaryButton } from "@/src/components/PrimaryButton";
+import { useGameSpeech } from "@/src/audio/useGameSpeech";
 import { colors, radius, spacing, typography, shadows } from "@/src/theme/tokens";
 
 interface Props {
@@ -30,6 +31,8 @@ export function SuccessDialog({
   onRestart,
   nextLabel = "Next Level",
 }: Props) {
+  const { language } = useGameSpeech();
+  const tamil = language === "ta";
   return (
     <Modal
       visible={visible}
@@ -51,27 +54,27 @@ export function SuccessDialog({
             ))}
           </View>
 
-          <Text style={styles.title}>{title}</Text>
-          {message ? <Text style={styles.message}>{message}</Text> : null}
+          <Text style={styles.title}>{tamil ? "செம குட்டி! சூப்பர்! 🌟" : title}</Text>
+          {message ? <Text style={styles.message}>{tamil ? "இன்னும் ஒரு லெவல் விளையாடலாமா?" : message}</Text> : null}
 
           <View style={styles.actions}>
             {onNext ? (
               <PrimaryButton
                 testID="success-next-button"
-                label={nextLabel}
+                label={tamil ? "அடுத்த லெவல்" : nextLabel}
                 onPress={onNext}
                 variant="primary"
               />
             ) : null}
             <PrimaryButton
               testID="success-restart-button"
-              label="Play Again"
+              label={tamil ? "மறுபடியும் விளையாடு" : "Play Again"}
               onPress={onRestart}
               variant="secondary"
             />
             <PrimaryButton
               testID="success-home-button"
-              label="Home"
+              label={tamil ? "ஹோம்" : "Home"}
               onPress={onHome}
               variant="ghost"
             />

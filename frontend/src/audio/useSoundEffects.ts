@@ -11,6 +11,8 @@ const SOURCES = {
   wrong: require("../../assets/sounds/wrong.wav"),
   star: require("../../assets/sounds/star.wav"),
   complete: require("../../assets/sounds/complete.wav"),
+  magic: require("../../assets/sounds/magic.wav"),
+  sparkle: require("../../assets/sounds/sparkle.wav"),
 } as const;
 
 export type SoundName = keyof typeof SOURCES;
@@ -26,10 +28,12 @@ export function useSoundEffects() {
   const wrong = useAudioPlayer(SOURCES.wrong);
   const star = useAudioPlayer(SOURCES.star);
   const complete = useAudioPlayer(SOURCES.complete);
+  const magic = useAudioPlayer(SOURCES.magic);
+  const sparkle = useAudioPlayer(SOURCES.sparkle);
 
   const players = useMemo(
-    () => ({ tap, button, correct, wrong, star, complete }),
-    [tap, button, correct, wrong, star, complete],
+    () => ({ tap, button, correct, wrong, star, complete, magic, sparkle }),
+    [tap, button, correct, wrong, star, complete, magic, sparkle],
   );
 
   useEffect(() => {

@@ -16,7 +16,10 @@ export type GameId =
   | "memory-safari"
   | "traffic-light"
   | "what-comes-next"
-  | "little-story-builder";
+  | "little-story-builder"
+  | "letter-safari"
+  | "sound-detective"
+  | "word-magic";
 
 export interface GameProgress {
   highestLevel: number; // 1..3

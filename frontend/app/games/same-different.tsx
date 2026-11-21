@@ -121,7 +121,7 @@ export default function SameDifferentScreen() {
           >
             <Text style={styles.prompt}>Are they</Text>
             <QuestionText>Same or Different?</QuestionText>
-            <SpokenInstruction english="Are they same or different?" tamil="இரண்டும் ஒரே மாதிரியா வேற வேறயா?" />
+            <SpokenInstruction english="Are they same or different?" tamil="இது ரெண்டும் சேமா இல்ல டிஃபரென்டா குட்டி?" />
           </Animated.View>
 
           <View style={styles.pair} testID="compare-pair">

@@ -118,7 +118,7 @@ export default function BiggerSmallerScreen() {
           >
             <Text style={styles.prompt}>Which one is</Text>
             <QuestionText testID="target-label">{round.askBigger ? "Bigger?" : "Smaller?"}</QuestionText>
-            <SpokenInstruction english={round.askBigger ? "Which one is bigger?" : "Which one is smaller?"} tamil={round.askBigger ? "எது பெருசு?" : "எது சின்னது?"} />
+            <SpokenInstruction english={round.askBigger ? "Which one is bigger?" : "Which one is smaller?"} tamil={round.askBigger ? "இதுல எது பெருசு குட்டி?" : "இதுல எது சின்னது குட்டி?"} />
           </Animated.View>
 
           <View style={styles.pair} testID="size-pair">

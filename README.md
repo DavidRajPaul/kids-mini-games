@@ -20,8 +20,23 @@ A colorful, calm collection of preschool mini-games built for Ezra (roughly ages
 | What's Next? | Complete a visual pattern | Pattern recognition |
 | Little Story Builder | Put story pictures in their logical order | Sequencing, language |
 | Tic Tac Toe | Two-player pass-and-play | Turn-taking, simple strategy |
+| **Letter Safari** | Match scattered uppercase/lowercase letters | Visual letter identification, not ABC recitation |
+| **Sound Detective** | Hear an English example word and identify its first letter | Beginning sound–symbol mapping |
+| **First Word Magic** | Choose the missing first letter in a short regular word | Early decoding and word-building practice |
 
 Games include calm sounds, levels, and large touch targets. All progress in the tracked games is stored locally. Some visual guidance is written in English; speech prompts offer English and Tamil where the device supports the necessary voices.
+
+## 📖 Early reading path (new)
+
+**Start with Letter Safari**, followed by Sound Detective, then First Word Magic only when the first two feel comfortable. The first version concentrates on a small set of common English letters rather than rushing through the alphabet. Encourage Ezra to point to a random letter when you see it in books or signs; do not use reciting ABC as evidence of recognising printed symbols.
+
+- Letter Safari: large, shuffled options; uppercase in level 1, lowercase in level 2, uppercase-to-lowercase matching in level 3.
+- Sound Detective: the word itself is **not printed during the question**, so its initial letter is not given away. Tap the speaker to hear an English example word, and find its starting letter.
+- First Word Magic: picture-supported missing-letter words are a gentle optional introduction, not a requirement for preschool children.
+- Previous simple games (Find It, Big or Small, Same or Different) are hidden from the home board rather than deleting their saved progress. They remain in the codebase.
+- Friendly, untimed feedback, short celebratory star animations, and original bundled chime sounds work without online APIs. The parent progress screen shows per-letter first-try picks across sessions; these are practice observations, **not** a validated literacy assessment.
+
+**For grown-ups:** play together, talk about the pictures, and read aloud daily. The AAP recommends shared reading as part of a language-rich early childhood routine. See [AAP early literacy](https://www.aap.org/en/patient-care/early-childhood/early-childhood-health-and-development/early-literacy/) and [Reading Rockets phonics activities](https://www.readingrockets.org/literacy-home/reading-101-guide-parents/your-kindergartener/phonics-and-decoding-activities).
 
 ## ✨ Home screen
 
@@ -29,7 +44,7 @@ The home screen uses a responsive grid of large pastel game tiles, emoji illustr
 
 ## 🔊 Voice and language
 
-Choose **English** or **தமிழ்** on the home screen. Games have a replay button for spoken instructions. Speech uses the device's text-to-speech facilities via `expo-speech`; compatible Tamil speech depends on a Tamil voice being installed and available locally. The text remains visible if speech cannot be played.
+Choose **English** or **தமிழ்** on the home screen. The setting is shared app-wide, so navigating between games cannot temporarily reset it to English. Casual, spoken Tamil is used for instructions; English example words can intentionally use English pronunciation for accurate phonics. The app never silently switches to English instructions when a Tamil voice is missing: it shows a message to install a compatible Tamil device voice instead. The speech engine prefers enhanced Tamil/English system voices when installed, but naturalness still depends on the phone’s TTS engine. The new chime effects are original bundled WAV files, not generated speech. Games have a replay button for spoken instructions. Speech uses the device's text-to-speech facilities via `expo-speech`; compatible Tamil speech depends on a Tamil voice being installed and available locally. The text remains visible if speech cannot be played.
 
 ## 📦 Download an Android APK using GitHub Actions
 
