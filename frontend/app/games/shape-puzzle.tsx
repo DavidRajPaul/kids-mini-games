@@ -147,7 +147,7 @@ export default function ShapePuzzleScreen() {
           >
             <Text style={styles.prompt}>Drag the</Text>
             <QuestionText testID="target-label">{round.target.label}</QuestionText>
-            <SpokenInstruction english={`Drag the ${round.target.label} into the outline`} tamil="சரியான வடிவத்தை இழுத்து உள்ளே வை!" />
+            <SpokenInstruction english={`Drag the ${round.target.label} into the outline`} tamil="சரியான shape-ஐ drag பண்ணி உள்ளே வை குட்டி!" />
           </Animated.View>
 
           <View style={styles.silhouetteWrap}>
