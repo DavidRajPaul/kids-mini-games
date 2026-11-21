@@ -15,10 +15,10 @@ import { MagicBurst } from "@/src/components/MagicBurst";
 export type Level = 1 | 2 | 3;
 
 const tamilPrompts: Partial<Record<GameId, (level: Level) => string>> = {
-  "memory-safari": () => "ஒரே மாதிரி இருக்கும் விலங்குகளை கண்டுபிடி!",
-  "traffic-light": (level) => level === 3 ? "இப்போ விதி தலைகீழ்! சிகப்பு போ! பச்சை நில்!" : "விளக்கை பார்த்து போகலாமா நிற்கலாமா சொல்லு!",
-  "what-comes-next": () => "அடுத்து என்ன வரும்னு கண்டுபிடி!",
-  "little-story-builder": () => "கதையை சரியான வரிசையில் சொல்லு!",
+  "memory-safari": () => "குட்டி, ஒரே மாதிரி இருக்கும் animal card ரெண்டையும் match பண்ணு!"
+  "traffic-light": (level) => level === 3 ? "ஓஹோ! இப்போ opposite game! Red வந்தா போ, green வந்தா நில்!" : "குட்டி, green வந்தா போ! Red வந்தா நில்! ரெடியா?",
+  "what-comes-next": () => "இந்த pattern-ல அடுத்து என்ன வரும்னு கண்டுபிடி குட்டி!",
+  "little-story-builder": () => "இந்த pictures-ஐ ஒரு story மாதிரி order-ல வை குட்டி!",
 };
 type Props = {
   id: GameId;
