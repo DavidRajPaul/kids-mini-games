@@ -3,6 +3,7 @@ import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { colors, radius, spacing, typography } from "@/src/theme/tokens";
+import { useGameSpeech } from "@/src/audio/useGameSpeech";
 
 interface Props {
   title?: string;
@@ -17,6 +18,8 @@ interface Props {
  * All icon buttons are 48x48pt minimum.
  */
 export function GameTopBar({ title, onHome, onRestart, onBack }: Props) {
+  const { language } = useGameSpeech();
+  const displayTitle = language === "ta" ? title?.replace(/^Level /, "லெவல் ") : title;
   return (
     <View style={styles.row}>
       <View style={styles.side}>
@@ -33,9 +36,9 @@ export function GameTopBar({ title, onHome, onRestart, onBack }: Props) {
         )}
       </View>
 
-      {title ? (
+      {displayTitle ? (
         <Text style={styles.title} numberOfLines={1}>
-          {title}
+          {displayTitle}
         </Text>
       ) : (
         <View />
