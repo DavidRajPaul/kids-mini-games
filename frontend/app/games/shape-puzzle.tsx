@@ -16,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useSoundEffects } from "@/src/audio/useSoundEffects";
 import { GameBackground } from "@/src/components/GameBackground";
+import { SpokenInstruction } from "@/src/components/SpokenInstruction";
 import { GameTopBar } from "@/src/components/GameTopBar";
 import { ProgressIndicator } from "@/src/components/ProgressIndicator";
 import { QuestionText } from "@/src/components/QuestionText";
@@ -131,6 +132,7 @@ export default function ShapePuzzleScreen() {
           >
             <Text style={styles.prompt}>Drag the</Text>
             <QuestionText testID="target-label">{round.target.label}</QuestionText>
+            <SpokenInstruction english={`Drag the ${round.target.label} into the outline`} tamil="சரியான வடிவத்தை இழுத்து உள்ளே வை!" />
           </Animated.View>
 
           <View
