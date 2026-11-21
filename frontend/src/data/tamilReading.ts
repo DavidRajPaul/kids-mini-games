@@ -16,6 +16,13 @@ export const UYIR = [
   { glyph: "ஔ", example: "ஔவையார்", emoji: "👵" },
 ] as const;
 
+/** 18 மெய்யெழுத்துகள் grouped by traditional வல்லினம் / மெல்லினம் / இடையினம். */
+export const MEI_GROUPS = [
+  { name: "வல்லினம்", letters: ["க்", "ச்", "ட்", "த்", "ப்", "ற்"] },
+  { name: "மெல்லினம்", letters: ["ங்", "ஞ்", "ண்", "ந்", "ம்", "ன்"] },
+  { name: "இடையினம்", letters: ["ய்", "ர்", "ல்", "வ்", "ழ்", "ள்"] },
+] as const;
+
 export const JOININGS = [
   { first: "க்", vowel: "அ", result: "க", emoji: "🐄", word: "கன்று" },
   { first: "ப்", vowel: "ஆ", result: "பா", emoji: "🥛", word: "பால்" },
