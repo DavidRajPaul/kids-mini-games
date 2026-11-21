@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { LearningGame } from "@/src/components/LearningGame";
 import { ReadingChoiceBoard } from "@/src/components/ReadingChoiceBoard";
+import { LocalizedText } from "@/src/components/LocalizedText";
 import { LETTERS, letterFor, pickOptions } from "@/src/data/reading";
 import { recordLetterAttempt } from "@/src/storage/readingProgress";
 import { type Level } from "@/src/components/LearningGame";
@@ -52,9 +53,9 @@ function LetterRound({ level, round, done, locked }: {
         locked={locked}
         onAnswer={choose}
       />
-      <Text style={styles.helper}>
-        {level === 1 ? "BIG letters" : level === 2 ? "little letters" : "Match BIG to little"}
-      </Text>
+      <LocalizedText style={styles.helper}
+        english={level === 1 ? "BIG letters" : level === 2 ? "little letters" : "Match BIG to little"}
+        tamil={level === 1 ? "பெரிய லெட்டர்!" : level === 2 ? "சின்ன லெட்டர்!" : "பெரிய letter-க்கு சரியான சின்ன letter-ஐ டச் பண்ணு!"} />
     </View>
   );
 }
