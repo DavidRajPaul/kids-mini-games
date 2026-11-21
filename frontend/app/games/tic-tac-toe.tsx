@@ -7,6 +7,7 @@ import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withTiming } from "
 
 import { useSoundEffects } from "@/src/audio/useSoundEffects";
 import { GameBackground } from "@/src/components/GameBackground";
+import { SpokenInstruction } from "@/src/components/SpokenInstruction";
 import { GameTopBar } from "@/src/components/GameTopBar";
 import { PrimaryButton } from "@/src/components/PrimaryButton";
 import { colors, radius, spacing, typography, shadows, durations } from "@/src/theme/tokens";
@@ -98,6 +99,7 @@ export default function TicTacToeScreen() {
         />
 
         <View style={styles.content}>
+          <SpokenInstruction english="Take turns. Put three in a row to win!" tamil="மாறி மாறி விளையாடு! ஒரு வரிசையில் மூணு வை!" />
           <View style={styles.scoreRow}>
             <ScorePill label="Player X" color="#1F6FEB" bg={colors.softBlueTint} value={score.X} highlight={turn === "X" && !winner} icon="close-thick" testID="score-x" />
             <ScorePill label="Draws" color="#7F8C8D" bg={colors.surfaceTinted} value={score.draws} highlight={false} icon="minus" testID="score-draw" />

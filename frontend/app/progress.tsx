@@ -22,6 +22,7 @@ const ROWS: { id: GameId | "tic-tac-toe"; title: string; icon: keyof typeof Mate
   { id: "memory-safari", title: "Memory Safari", icon: "cards", tint: colors.softGreenTint, iconColor: "#2E8B57" },
   { id: "traffic-light", title: "Traffic Light Challenge", icon: "traffic-light", tint: colors.pastelOrangeTint, iconColor: "#B45309" },
   { id: "what-comes-next", title: "What Comes Next?", icon: "shape", tint: colors.pastelPurpleTint, iconColor: "#8E44AD" },
+  { id: "little-story-builder", title: "Little Story Builder", icon: "book-open-page-variant", tint: colors.pastelOrangeTint, iconColor: "#B45309" },
 ];
 
 interface Row {

@@ -14,6 +14,7 @@ import Animated, {
 
 import { useSoundEffects } from "@/src/audio/useSoundEffects";
 import { GameBackground } from "@/src/components/GameBackground";
+import { SpokenInstruction } from "@/src/components/SpokenInstruction";
 import { GameTopBar } from "@/src/components/GameTopBar";
 import { ProgressIndicator } from "@/src/components/ProgressIndicator";
 import { QuestionText } from "@/src/components/QuestionText";
@@ -121,6 +122,7 @@ export default function CountAnimalsScreen() {
           >
             <Text style={styles.prompt}>How many</Text>
             <QuestionText testID="target-label">{round.animal.plural}?</QuestionText>
+            <SpokenInstruction english={`How many ${round.animal.plural}?`} tamil="எத்தனை விலங்குகள் இருக்குன்னு எண்ணு!" />
           </Animated.View>
 
           <ScrollView contentContainerStyle={styles.animalsScroll} showsVerticalScrollIndicator={false}>

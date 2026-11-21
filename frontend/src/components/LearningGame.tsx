@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GameBackground } from "@/src/components/GameBackground";
 import { GameTopBar } from "@/src/components/GameTopBar";
@@ -9,8 +9,16 @@ import { SuccessDialog } from "@/src/components/SuccessDialog";
 import { useSoundEffects } from "@/src/audio/useSoundEffects";
 import { bumpTimesPlayed, saveProgress, GameId } from "@/src/storage/progress";
 import { colors, spacing, typography } from "@/src/theme/tokens";
+import { useGameSpeech } from "@/src/audio/useGameSpeech";
 
 export type Level = 1 | 2 | 3;
+
+const tamilPrompts: Partial<Record<GameId, (level: Level) => string>> = {
+  "memory-safari": () => "ஒரே மாதிரி இருக்கும் விலங்குகளை கண்டுபிடி!",
+  "traffic-light": (level) => level === 3 ? "இப்போ விதி தலைகீழ்! சிகப்பு போ! பச்சை நில்!" : "விளக்கை பார்த்து போகலாமா நிற்கலாமா சொல்லு!",
+  "what-comes-next": () => "அடுத்து என்ன வரும்னு கண்டுபிடி!",
+  "little-story-builder": () => "கதையை சரியான வரிசையில் சொல்லு!",
+};
 type Props = {
   id: GameId;
   title: string;
@@ -23,11 +31,14 @@ type Props = {
 export function LearningGame({ id, title, instruction, children, rounds = 4 }: Props) {
   const router = useRouter();
   const sound = useSoundEffects();
+  const { language, speak } = useGameSpeech();
   const [level, setLevel] = useState<Level>(1);
   const [round, setRound] = useState(0);
   const [mistakes, setMistakes] = useState(0);
   const [complete, setComplete] = useState(false);
   const [locked, setLocked] = useState(false);
+  const spokenPrompt = language === "ta" ? (tamilPrompts[id]?.(level) ?? instruction(level, round)) : instruction(level, round);
+  useEffect(() => { void speak(spokenPrompt); }, [spokenPrompt, speak]);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inFlight = useRef(false);
   useEffect(() => {
@@ -70,7 +81,12 @@ export function LearningGame({ id, title, instruction, children, rounds = 4 }: P
         <GameTopBar title={title} onHome={home} onRestart={() => reset(1)} onBack={() => { if (timer.current) clearTimeout(timer.current); router.back(); }} />
         <ScrollView contentContainerStyle={styles.content}>
           <ProgressIndicator current={round + (complete ? 1 : 0)} total={rounds} label={`Level ${level} · Round`} />
-          <Text style={styles.prompt}>{instruction(level, round)}</Text>
+          <View style={styles.promptRow}>
+            <Text style={styles.prompt}>{instruction(level, round)}</Text>
+            <Pressable testID="repeat-instruction" accessibilityRole="button" accessibilityLabel="Repeat spoken instruction" onPress={() => { void speak(spokenPrompt); }} style={styles.speakButton}>
+              <Text style={styles.speakIcon}>🔊</Text>
+            </Pressable>
+          </View>
           {children({ level, round, done, locked })}
         </ScrollView>
         <SuccessDialog visible={complete} title={level === 3 ? "Wonderful work!" : "Well done!"} message={level === 3 ? "You finished all the levels." : `Ready for level ${level + 1}?`} stars={stars} onHome={home} onRestart={() => reset(1)} onNext={level === 3 ? undefined : () => reset((level + 1) as Level)} />
@@ -81,5 +97,8 @@ export function LearningGame({ id, title, instruction, children, rounds = 4 }: P
 const styles = StyleSheet.create({
  safe: { flex: 1 },
  content: { flexGrow: 1, justifyContent: "center", padding: spacing.lg, gap: spacing.lg },
- prompt: { ...typography.title, color: colors.onSurface, textAlign: "center" },
+ promptRow: { flexDirection: "row", gap: spacing.sm, alignItems: "center", justifyContent: "center" },
+ prompt: { ...typography.title, color: colors.onSurface, textAlign: "center", flexShrink: 1 },
+ speakButton: { width: 54, height: 54, alignItems: "center", justifyContent: "center" },
+ speakIcon: { fontSize: 29 },
 });
