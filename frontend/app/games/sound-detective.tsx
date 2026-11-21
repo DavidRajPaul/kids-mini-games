@@ -13,8 +13,8 @@ export default function SoundDetective() {
       id="sound-detective"
       title="Sound Detective"
       rounds={4}
-      instruction={() => "Listen to the word. Which letter sound comes first?"}
-      tamilInstruction={() => "குட்டி, word-ஐ கேளு! முதல்ல எந்த English letter sound வருது? கண்டுபிடி பார்க்கலாம்!"}
+      instruction={() => "Tap the speaker, then find the first sound."}
+      tamilInstruction={() => "🔊 பட்டனை டச் பண்ணி word-ஐ கேளு! முதல் sound எந்த letter-ன்னு கண்டுபிடி குட்டி!"}
     >
       {({ level, round, done, locked }) => {
         const target = letterFor(level, round);
