@@ -26,15 +26,17 @@ type Props = {
   instruction: (level: Level, round: number) => string;
   tamilInstruction?: (level: Level, round: number) => string;
   displayInstruction?: (level: Level, round: number, language: "en" | "ta") => string;
+  forceLanguage?: "ta";
   children: (context: { level: Level; round: number; done: (correct: boolean) => void; locked: boolean }) => React.ReactNode;
   rounds?: number;
 };
 
 /** Shared level progression. No timed pressure or punitive failure screen. */
-export function LearningGame({ id, title, instruction, tamilInstruction, displayInstruction, children, rounds = 4 }: Props) {
+export function LearningGame({ id, title, instruction, tamilInstruction, displayInstruction, forceLanguage, children, rounds = 4 }: Props) {
   const router = useRouter();
   const sound = useSoundEffects();
-  const { language, ready, speak, stop } = useGameSpeech();
+  const { language, ready, speak, stop, voiceNotice } = useGameSpeech();
+  const effectiveLanguage = forceLanguage ?? language;
   const [level, setLevel] = useState<Level>(1);
   const [round, setRound] = useState(0);
   const [mistakes, setMistakes] = useState(0);
@@ -42,10 +44,10 @@ export function LearningGame({ id, title, instruction, tamilInstruction, display
   const [locked, setLocked] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
-  const spokenPrompt = language === "ta"
+  const spokenPrompt = effectiveLanguage === "ta"
     ? (tamilInstruction?.(level, round) ?? tamilPrompts[id]?.(level) ?? instruction(level, round))
     : instruction(level, round);
-  useEffect(() => { if (ready && !complete) void speak(spokenPrompt); }, [ready, complete, spokenPrompt, speak]);
+  useEffect(() => { if (ready && !complete) void speak(spokenPrompt, forceLanguage); }, [ready, complete, spokenPrompt, speak, forceLanguage]);
   useEffect(() => {
     AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion).catch(() => {});
     const subscription = AccessibilityInfo.addEventListener("reduceMotionChanged", setReduceMotion);
@@ -97,15 +99,16 @@ export function LearningGame({ id, title, instruction, tamilInstruction, display
         <ScrollView contentContainerStyle={styles.content}>
           <ProgressIndicator current={round + (complete ? 1 : 0)} total={rounds} label={`Level ${level} · Round`} />
           <View style={styles.promptRow}>
-            <Text style={styles.prompt}>{displayInstruction ? displayInstruction(level, round, language) : spokenPrompt}</Text>
-            <Pressable testID="repeat-instruction" accessibilityRole="button" accessibilityLabel="Repeat spoken instruction" onPress={() => { void speak(spokenPrompt); }} style={styles.speakButton}>
+            <Text style={styles.prompt}>{displayInstruction ? displayInstruction(level, round, effectiveLanguage) : spokenPrompt}</Text>
+            <Pressable testID="repeat-instruction" accessibilityRole="button" accessibilityLabel="Repeat spoken instruction" onPress={() => { void speak(spokenPrompt, forceLanguage); }} style={styles.speakButton}>
               <Text style={styles.speakIcon}>🔊</Text>
             </Pressable>
           </View>
+          {forceLanguage === "ta" && voiceNotice ? <Text style={styles.voiceNotice}>{voiceNotice}</Text> : null}
           {children({ level, round, done, locked })}
         </ScrollView>
         <MagicBurst visible={celebrating} reduceMotion={reduceMotion} />
-        <SuccessDialog visible={complete} title={language === "ta" ? "செம குட்டி! 🌟" : (level === 3 ? "Wonderful work!" : "Well done!")} message={language === "ta" ? (level === 3 ? "எல்லா லெவலும் முடிச்சிட்டே!" : "அடுத்த லெவலுக்கு ரெடியா?") : (level === 3 ? "You finished all the levels." : `Ready for level ${level + 1}?`)} stars={stars} onHome={home} onRestart={() => reset(1)} onNext={level === 3 ? undefined : () => reset((level + 1) as Level)} />
+        <SuccessDialog visible={complete} title={effectiveLanguage === "ta" ? "செம குட்டி! 🌟" : (level === 3 ? "Wonderful work!" : "Well done!")} message={effectiveLanguage === "ta" ? (level === 3 ? "எல்லா லெவலும் முடிச்சிட்டே!" : "அடுத்த லெவலுக்கு ரெடியா?") : (level === 3 ? "You finished all the levels." : `Ready for level ${level + 1}?`)} stars={stars} onHome={home} onRestart={() => reset(1)} onNext={level === 3 ? undefined : () => reset((level + 1) as Level)} />
       </SafeAreaView>
     </GameBackground>
   );
@@ -117,4 +120,5 @@ const styles = StyleSheet.create({
  prompt: { ...typography.title, color: colors.onSurface, textAlign: "center", flexShrink: 1 },
  speakButton: { width: 54, height: 54, alignItems: "center", justifyContent: "center" },
  speakIcon: { fontSize: 29 },
+ voiceNotice: { ...typography.caption, color: colors.onDanger, textAlign: "center", backgroundColor: colors.dangerTint, padding: spacing.sm, borderRadius: 12 },
 });
