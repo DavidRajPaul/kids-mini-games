@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { useIconFonts } from "@/src/hooks/use-icon-fonts";
+import { GameVoiceProvider } from "@/src/audio/useGameSpeech";
 
 
 // Disable logbox errors etc so that users can see the app
@@ -34,7 +35,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <Stack screenOptions={{ headerShown: false, animation: "fade" }} />
+        <GameVoiceProvider>
+          <Stack screenOptions={{ headerShown: false, animation: "fade" }} />
+        </GameVoiceProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
