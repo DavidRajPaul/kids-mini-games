@@ -17,6 +17,7 @@ type GameEntry = {
 };
 const TAMIL_GAMES: GameEntry[] = [
   { id: "tamil-vowels", title: "உயிரெழுத்து வேட்டை", subtitle: "அ ஆ இ ஈ · 12 எழுத்துகள்", emoji: "🌈", tint: colors.pastelYellowTint, route: "/games/tamil-vowels" },
+  { id: "tamil-mei", title: "மெய்யெழுத்து மேஜிக்", subtitle: "க் ங் ச் · 18 எழுத்துகள்", emoji: "🔤", tint: colors.pastelPinkTint, route: "/games/tamil-mei" },
   { id: "tamil-sounds", title: "தமிழ் ஒலி தோட்டம்", subtitle: "படம் · ஒலி · எழுத்து", emoji: "🎧", tint: colors.softGreenTint, route: "/games/tamil-sounds" },
   { id: "tamil-words", title: "தமிழ் சொல் மேஜிக்", subtitle: "பூ · மா · ஆடு", emoji: "🪄", tint: colors.pastelPurpleTint, route: "/games/tamil-words" },
 ];
