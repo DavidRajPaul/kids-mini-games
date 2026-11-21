@@ -46,7 +46,7 @@ Choose **English** or **தமிழ்** on the home screen. Games have a repla
 
 The workflow builds a self-contained JS-bundled release-variant APK using:
 - GitHub-hosted Ubuntu runner
-- Node.js 20, Java 17 and Android SDK
+- Node.js 22, Java 17 and Android SDK
 - Yarn 1.22.22
 - `expo prebuild --platform android --clean`
 - `./gradlew :app:assembleRelease --no-daemon --stacktrace`
@@ -74,7 +74,7 @@ Do not paste signing credentials or personal tokens into public logs or issues.
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 22+
 - Yarn 1.22.x (Corepack recommended)
 - Android Studio + SDK for native Android builds
 - Java 17 for Gradle native builds
