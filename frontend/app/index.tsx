@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
 import { AccessibilityInfo, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
@@ -8,6 +8,7 @@ import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withSpring } fr
 import { useSoundEffects } from "@/src/audio/useSoundEffects";
 import { useGameSpeech, type GameLanguage } from "@/src/audio/useGameSpeech";
 import { GameBackground } from "@/src/components/GameBackground";
+import { SparkleField } from "@/src/components/SparkleField";
 import { colors, radius, shadows, spacing, typography } from "@/src/theme/tokens";
 
 type GameEntry = {
@@ -57,6 +58,11 @@ export default function HomeScreen() {
   const { width } = useWindowDimensions();
   const { language, setLanguage, speak } = useGameSpeech();
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [focused, setFocused] = useState(false);
+  useFocusEffect(useCallback(() => {
+    setFocused(true);
+    return () => setFocused(false);
+  }, []));
   useEffect(() => {
     AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion).catch(() => {});
     const subscription = AccessibilityInfo.addEventListener("reduceMotionChanged", setReduceMotion);
@@ -73,6 +79,7 @@ export default function HomeScreen() {
       <SafeAreaView style={styles.safe} edges={["top", "bottom", "left", "right"]}>
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
+            <SparkleField active={focused && !reduceMotion} />
             <Text style={styles.greeting}>👋 Hello, Ezra!</Text>
             <Text style={styles.title} testID="app-title">Choose an adventure!</Text>
             <Text style={styles.subtitle}>Tap a picture to play ✨</Text>
@@ -111,7 +118,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1 },
   scroll: { padding: spacing.md, paddingBottom: spacing.xxl, gap: spacing.lg },
-  header: { alignItems: "center", gap: spacing.xs, marginTop: spacing.sm },
+  header: { alignItems: "center", gap: spacing.xs, marginTop: spacing.sm, minHeight: 180, justifyContent: "center" },
   greeting: { ...typography.subtitle, color: colors.onSurface },
   title: { ...typography.displayLG, color: colors.onSurface, textAlign: "center" },
   subtitle: { ...typography.body, color: colors.onSurfaceMuted, textAlign: "center" },
