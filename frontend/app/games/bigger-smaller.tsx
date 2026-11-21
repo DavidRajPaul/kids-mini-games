@@ -14,6 +14,7 @@ import Animated, {
 
 import { useSoundEffects } from "@/src/audio/useSoundEffects";
 import { GameBackground } from "@/src/components/GameBackground";
+import { SpokenInstruction } from "@/src/components/SpokenInstruction";
 import { GameTopBar } from "@/src/components/GameTopBar";
 import { ProgressIndicator } from "@/src/components/ProgressIndicator";
 import { QuestionText } from "@/src/components/QuestionText";
@@ -117,6 +118,7 @@ export default function BiggerSmallerScreen() {
           >
             <Text style={styles.prompt}>Which one is</Text>
             <QuestionText testID="target-label">{round.askBigger ? "Bigger?" : "Smaller?"}</QuestionText>
+            <SpokenInstruction english={round.askBigger ? "Which one is bigger?" : "Which one is smaller?"} tamil={round.askBigger ? "எது பெருசு?" : "எது சின்னது?"} />
           </Animated.View>
 
           <View style={styles.pair} testID="size-pair">

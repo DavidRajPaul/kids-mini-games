@@ -14,6 +14,7 @@ import Animated, {
 
 import { useSoundEffects } from "@/src/audio/useSoundEffects";
 import { GameBackground } from "@/src/components/GameBackground";
+import { SpokenInstruction } from "@/src/components/SpokenInstruction";
 import { GameTopBar } from "@/src/components/GameTopBar";
 import { PrimaryButton } from "@/src/components/PrimaryButton";
 import { ProgressIndicator } from "@/src/components/ProgressIndicator";
@@ -120,6 +121,7 @@ export default function SameDifferentScreen() {
           >
             <Text style={styles.prompt}>Are they</Text>
             <QuestionText>Same or Different?</QuestionText>
+            <SpokenInstruction english="Are they same or different?" tamil="இரண்டும் ஒரே மாதிரியா வேற வேறயா?" />
           </Animated.View>
 
           <View style={styles.pair} testID="compare-pair">
