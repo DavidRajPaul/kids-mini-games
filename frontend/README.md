@@ -1,50 +1,37 @@
-# Welcome to your Expo app 👋
+# Ezra Brain Games — Expo application
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This directory contains the Expo SDK 54 / React Native app that powers Ezra Brain Games.
 
-## Get started
+For the project overview, game descriptions, Android APK download instructions, privacy notes, and troubleshooting, see the [repository README](../README.md).
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Quick start
 
 ```bash
-npm run reset-project
+corepack enable
+corepack prepare yarn@1.22.22 --activate
+yarn install
+yarn start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Android/iOS builds require the relevant platform SDK. To build an installable testing APK locally on a machine with Android SDK + JDK 17:
 
-## Learn more
+```bash
+yarn install
+npx expo prebuild --platform android --clean
+cd android
+./gradlew :app:assembleRelease --no-daemon
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Find the APK at `android/app/build/outputs/apk/release/app-release.apk`. The GitHub Actions workflow performs these steps on an Ubuntu runner and uploads the APK as an artifact.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Source locations
 
-## Join the community
+- `app/index.tsx` — home tile grid, particle animations and voice selection
+- `app/games/` — gameplay screens
+- `app/progress.tsx` — local progress dashboard
+- `src/components/` — shared controls
+- `src/audio/` — sounds and device text-to-speech
+- `src/storage/` — offline progress storage
+- `src/theme/` — design tokens
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Run `yarn lint` and `./node_modules/.bin/tsc --noEmit` before opening a PR. Do not commit generated `android/`, `ios/`, `node_modules/` or personal signing keys.
