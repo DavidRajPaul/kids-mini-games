@@ -15,6 +15,12 @@ type GameEntry = {
   id: string; title: string; subtitle: string; emoji: string;
   tint: string; route: string;
 };
+const TAMIL_GAMES: GameEntry[] = [
+  { id: "tamil-vowels", title: "உயிரெழுத்து வேட்டை", subtitle: "அ ஆ இ ஈ · 12 எழுத்துகள்", emoji: "🌈", tint: colors.pastelYellowTint, route: "/games/tamil-vowels" },
+  { id: "tamil-sounds", title: "தமிழ் ஒலி தோட்டம்", subtitle: "படம் · ஒலி · எழுத்து", emoji: "🎧", tint: colors.softGreenTint, route: "/games/tamil-sounds" },
+  { id: "tamil-words", title: "தமிழ் சொல் மேஜிக்", subtitle: "பூ · மா · ஆடு", emoji: "🪄", tint: colors.pastelPurpleTint, route: "/games/tamil-words" },
+];
+
 const GAMES: GameEntry[] = [
   { id: "letter-safari", title: "Letter Safari", subtitle: "Spot the ABCs", emoji: "🔤", tint: colors.pastelPinkTint, route: "/games/letter-safari" },
   { id: "sound-detective", title: "Sound Detective", subtitle: "Hear it, find it", emoji: "👂", tint: colors.softBlueTint, route: "/games/sound-detective" },
@@ -93,6 +99,15 @@ export default function HomeScreen() {
               ))}
             </View>
           </View>
+          <Text style={styles.sectionTitle}>🌸 தமிழ் கற்கலாம்!</Text>
+          <View style={styles.grid} testID="tamil-game-grid">
+            {TAMIL_GAMES.map((game, index) => (
+              <View key={game.id} style={{ width: `${100 / columns}%` as `${number}%` }}>
+                <GameTile game={game} index={index} animated={!reduceMotion} onPress={() => open(game)} />
+              </View>
+            ))}
+          </View>
+          <Text style={styles.sectionTitle}>{language === "ta" ? "English கேம்ஸ்! 🔤" : "English & more games 🔤"}</Text>
           <View style={styles.grid} testID="game-grid">
             {GAMES.map((game, index) => (
               <View key={game.id} style={{ width: `${100 / columns}%` as `${number}%` }}>
