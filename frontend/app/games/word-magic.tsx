@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { LearningGame } from "@/src/components/LearningGame";
 import { ReadingChoiceBoard } from "@/src/components/ReadingChoiceBoard";
+import { LocalizedText } from "@/src/components/LocalizedText";
 import { LETTERS, pickOptions, wordFor } from "@/src/data/reading";
 import { colors, radius, spacing, typography } from "@/src/theme/tokens";
 
@@ -27,7 +28,7 @@ export default function WordMagic() {
                 <Text style={styles.blank}>?</Text>
                 <Text style={styles.word}>{target.word.slice(1).toUpperCase()}</Text>
               </View>
-              <Text style={styles.caption}>Say each sound, then try the word together!</Text>
+              <LocalizedText style={styles.caption} english="Say each sound, then try the word together!" tamil="ஒவ்வொரு sound-ஆ சொல்லி word-ஐ சேர்த்து படிக்கலாம்!" />
             </View>
             <ReadingChoiceBoard
               choices={options}
