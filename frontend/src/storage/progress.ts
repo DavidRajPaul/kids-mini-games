@@ -19,7 +19,10 @@ export type GameId =
   | "little-story-builder"
   | "letter-safari"
   | "sound-detective"
-  | "word-magic";
+  | "word-magic"
+  | "tamil-vowels"
+  | "tamil-sounds"
+  | "tamil-words";
 
 export interface GameProgress {
   highestLevel: number; // 1..3
