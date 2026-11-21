@@ -4,6 +4,7 @@ import { useGameSpeech } from "@/src/audio/useGameSpeech";
 import { StyleSheet, Text, View } from "react-native";
 import { LearningGame } from "@/src/components/LearningGame";
 import { ReadingChoiceBoard } from "@/src/components/ReadingChoiceBoard";
+import { LocalizedText } from "@/src/components/LocalizedText";
 import { LETTERS, letterFor, pickOptions } from "@/src/data/reading";
 import { colors, radius, spacing, typography } from "@/src/theme/tokens";
 
@@ -18,7 +19,7 @@ export default function SoundDetective() {
     >
       {({ level, round, done, locked }) => {
         const target = letterFor(level, round);
-        const SpeakWord = () => { const { speak } = useGameSpeech(); return <Pressable accessibilityRole="button" accessibilityLabel="Hear the example word" testID="hear-word" onPress={() => { void speak(target.word, "en"); }} style={styles.speak}><Text style={styles.speakText}>🔊 Hear word</Text></Pressable>; };
+        const SpeakWord = () => { const { speak, language } = useGameSpeech(); return <Pressable accessibilityRole="button" accessibilityLabel="Hear the example word" testID="hear-word" onPress={() => { void speak(target.word, "en"); }} style={styles.speak}><Text style={styles.speakText}>{language === "ta" ? "🔊 word-ஐ கேளு" : "🔊 Hear word"}</Text></Pressable>; };
         const options = pickOptions(
           target.letter.toUpperCase(), LETTERS.map(l => l.letter.toUpperCase()),
           level === 1 ? 3 : level === 2 ? 4 : 5, 10 + level * 4 + round,
@@ -29,7 +30,7 @@ export default function SoundDetective() {
               <Text style={styles.illustration}>{target.picture}</Text>
               <SpeakWord />
             </View>
-            <Text style={styles.helper}>Listen first, then choose a letter.</Text>
+            <LocalizedText english="Listen first, then choose a letter." tamil="முதல்ல கேளு, அப்புறம் letter-ஐ டச் பண்ணு!" style={styles.helper} />
             <ReadingChoiceBoard
               choices={options}
               answer={target.letter.toUpperCase()}
