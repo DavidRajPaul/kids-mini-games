@@ -151,7 +151,7 @@ export default function FindObjectScreen() {
             <QuestionText testID="target-label">
               {round.target.label}
             </QuestionText>
-            <SpokenInstruction english={`Find the ${round.target.label}`} tamil="நான் சொல்ற பொருளை கண்டுபிடி!" />
+            <SpokenInstruction english={`Find the ${round.target.label}`} tamil="நான் சொல்ற பொருளை டச் பண்ணு குட்டி!" />
           </Animated.View>
 
           <ScrollView
