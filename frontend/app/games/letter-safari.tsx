@@ -15,7 +15,7 @@ export default function LetterSafari() {
       title="Letter Safari"
       rounds={4}
       instruction={(level, round) => `Can you spot the letter ${letterFor(level, round).letter.toUpperCase()}?`}
-      tamilInstruction={(level, round) => `${letterFor(level, round).nameTamil} letter எங்க இருக்கு குட்டி? கண்டுபிடி பார்க்கலாம்!`}
+      tamilInstruction={(level, round) => `${letterFor(level, round).nameTamil} லெட்டர் எங்க இருக்கு குட்டி? கண்டுபிடி பார்க்கலாம்!`}
     >
       {({ level, round, done, locked }) =>
         <LetterRound key={`${level}-${round}`} level={level} round={round} done={done} locked={locked} />

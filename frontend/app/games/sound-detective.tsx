@@ -15,7 +15,7 @@ export default function SoundDetective() {
       title="Sound Detective"
       rounds={4}
       instruction={() => "Tap the speaker, then find the first sound."}
-      tamilInstruction={() => "🔊 பட்டனை டச் பண்ணி word-ஐ கேளு! முதல் sound எந்த letter-ன்னு கண்டுபிடி குட்டி!"}
+      tamilInstruction={() => "ஸ்பீக்கரை டச் பண்ணி வேர்டைக் கேளு! முதல் சவுண்ட் எந்த லெட்டர்னு கண்டுபிடி குட்டி!"}
     >
       {({ level, round, done, locked }) => {
         const target = letterFor(level, round);

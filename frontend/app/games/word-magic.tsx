@@ -13,7 +13,7 @@ export default function WordMagic() {
       title="First Word Magic"
       rounds={3}
       instruction={() => "Pick the missing first letter."}
-      tamilInstruction={() => "செம! இப்போ ஒரு சின்ன English word பில்ட் பண்ணலாம்! முதல் letter எது?"}
+      tamilInstruction={() => "செம! இப்போ ஒரு சின்ன இங்கிலீஷ் வேர்டு பில்ட் பண்ணலாம்! முதல் லெட்டர் எது?"}
     >
       {({ level, round, done, locked }) => {
         const target = wordFor(level, round);
