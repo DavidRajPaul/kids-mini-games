@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { AccessibilityInfo, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GameBackground } from "@/src/components/GameBackground";
 import { GameTopBar } from "@/src/components/GameTopBar";
@@ -10,6 +10,7 @@ import { useSoundEffects } from "@/src/audio/useSoundEffects";
 import { bumpTimesPlayed, saveProgress, GameId } from "@/src/storage/progress";
 import { colors, spacing, typography } from "@/src/theme/tokens";
 import { useGameSpeech } from "@/src/audio/useGameSpeech";
+import { MagicBurst } from "@/src/components/MagicBurst";
 
 export type Level = 1 | 2 | 3;
 
@@ -23,22 +24,32 @@ type Props = {
   id: GameId;
   title: string;
   instruction: (level: Level, round: number) => string;
+  tamilInstruction?: (level: Level, round: number) => string;
   children: (context: { level: Level; round: number; done: (correct: boolean) => void; locked: boolean }) => React.ReactNode;
   rounds?: number;
 };
 
 /** Shared level progression. No timed pressure or punitive failure screen. */
-export function LearningGame({ id, title, instruction, children, rounds = 4 }: Props) {
+export function LearningGame({ id, title, instruction, tamilInstruction, children, rounds = 4 }: Props) {
   const router = useRouter();
   const sound = useSoundEffects();
-  const { language, speak } = useGameSpeech();
+  const { language, ready, speak, stop } = useGameSpeech();
   const [level, setLevel] = useState<Level>(1);
   const [round, setRound] = useState(0);
   const [mistakes, setMistakes] = useState(0);
   const [complete, setComplete] = useState(false);
   const [locked, setLocked] = useState(false);
-  const spokenPrompt = language === "ta" ? (tamilPrompts[id]?.(level) ?? instruction(level, round)) : instruction(level, round);
-  useEffect(() => { void speak(spokenPrompt); }, [spokenPrompt, speak]);
+  const [celebrating, setCelebrating] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const spokenPrompt = language === "ta"
+    ? (tamilInstruction?.(level, round) ?? tamilPrompts[id]?.(level) ?? instruction(level, round))
+    : instruction(level, round);
+  useEffect(() => { if (ready && !complete) void speak(spokenPrompt); }, [ready, complete, spokenPrompt, speak]);
+  useEffect(() => {
+    AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion).catch(() => {});
+    const subscription = AccessibilityInfo.addEventListener("reduceMotionChanged", setReduceMotion);
+    return () => subscription.remove();
+  }, []);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inFlight = useRef(false);
   useEffect(() => {
@@ -48,7 +59,8 @@ export function LearningGame({ id, title, instruction, children, rounds = 4 }: P
   const reset = (next: Level) => {
     if (timer.current) clearTimeout(timer.current);
     inFlight.current = false;
-    setLevel(next); setRound(0); setMistakes(0); setLocked(false); setComplete(false);
+    stop();
+    setLevel(next); setRound(0); setMistakes(0); setLocked(false); setCelebrating(false); setComplete(false);
   };
   const done = (correct: boolean) => {
     if (inFlight.current || complete) return;
@@ -59,7 +71,8 @@ export function LearningGame({ id, title, instruction, children, rounds = 4 }: P
     }
     inFlight.current = true;
     setLocked(true);
-    sound("correct");
+    setCelebrating(true);
+    sound("magic");
     timer.current = setTimeout(() => {
       if (round + 1 === rounds) {
         const stars = mistakes === 0 ? 3 : mistakes <= 2 ? 2 : 1;
@@ -70,26 +83,28 @@ export function LearningGame({ id, title, instruction, children, rounds = 4 }: P
         setRound(n => n + 1);
         setLocked(false);
       }
+      setCelebrating(false);
       inFlight.current = false;
-    }, 400);
+    }, 720);
   };
   const stars = mistakes === 0 ? 3 : mistakes <= 2 ? 2 : 1;
-  const home = () => { if (timer.current) clearTimeout(timer.current); router.replace("/"); };
+  const home = () => { if (timer.current) clearTimeout(timer.current); stop(); router.replace("/"); };
   return (
     <GameBackground>
       <SafeAreaView style={styles.safe} edges={["top", "bottom", "left", "right"]}>
-        <GameTopBar title={title} onHome={home} onRestart={() => reset(1)} onBack={() => { if (timer.current) clearTimeout(timer.current); router.back(); }} />
+        <GameTopBar title={title} onHome={home} onRestart={() => reset(1)} onBack={() => { if (timer.current) clearTimeout(timer.current); stop(); router.back(); }} />
         <ScrollView contentContainerStyle={styles.content}>
           <ProgressIndicator current={round + (complete ? 1 : 0)} total={rounds} label={`Level ${level} · Round`} />
           <View style={styles.promptRow}>
-            <Text style={styles.prompt}>{instruction(level, round)}</Text>
+            <Text style={styles.prompt}>{spokenPrompt}</Text>
             <Pressable testID="repeat-instruction" accessibilityRole="button" accessibilityLabel="Repeat spoken instruction" onPress={() => { void speak(spokenPrompt); }} style={styles.speakButton}>
               <Text style={styles.speakIcon}>🔊</Text>
             </Pressable>
           </View>
           {children({ level, round, done, locked })}
         </ScrollView>
-        <SuccessDialog visible={complete} title={level === 3 ? "Wonderful work!" : "Well done!"} message={level === 3 ? "You finished all the levels." : `Ready for level ${level + 1}?`} stars={stars} onHome={home} onRestart={() => reset(1)} onNext={level === 3 ? undefined : () => reset((level + 1) as Level)} />
+        <MagicBurst visible={celebrating} reduceMotion={reduceMotion} />
+        <SuccessDialog visible={complete} title={language === "ta" ? "செம குட்டி! 🌟" : (level === 3 ? "Wonderful work!" : "Well done!")} message={language === "ta" ? (level === 3 ? "எல்லா லெவலும் முடிச்சிட்டே!" : "அடுத்த லெவலுக்கு ரெடியா?") : (level === 3 ? "You finished all the levels." : `Ready for level ${level + 1}?`)} stars={stars} onHome={home} onRestart={() => reset(1)} onNext={level === 3 ? undefined : () => reset((level + 1) as Level)} />
       </SafeAreaView>
     </GameBackground>
   );
