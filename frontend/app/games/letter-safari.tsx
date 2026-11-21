@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { LearningGame } from "@/src/components/LearningGame";
 import { ReadingChoiceBoard } from "@/src/components/ReadingChoiceBoard";
 import { LocalizedText } from "@/src/components/LocalizedText";
@@ -16,6 +16,7 @@ export default function LetterSafari() {
       rounds={4}
       instruction={(level, round) => `Can you spot the letter ${letterFor(level, round).letter.toUpperCase()}?`}
       tamilInstruction={(level, round) => `${letterFor(level, round).nameTamil} லெட்டர் எங்க இருக்கு குட்டி? கண்டுபிடி பார்க்கலாம்!`}
+      displayInstruction={(_, __, language) => language === "ta" ? "லெட்டர் பேரைக் கேட்டு சரியானதை டச் பண்ணு!" : "Listen, then find the letter!"}
     >
       {({ level, round, done, locked }) =>
         <LetterRound key={`${level}-${round}`} level={level} round={round} done={done} locked={locked} />
@@ -28,6 +29,7 @@ function LetterRound({ level, round, done, locked }: {
   level: Level; round: number; done: (correct: boolean) => void; locked: boolean;
 }) {
   const firstTap = useRef(false);
+  const [hintVisible, setHintVisible] = React.useState(false);
   const target = letterFor(level, round);
   const display = (value: string) => level === 1 ? value.toUpperCase() : value;
   const options = pickOptions(target.letter, LETTERS.map(l => l.letter),
@@ -35,7 +37,7 @@ function LetterRound({ level, round, done, locked }: {
   const choose = (correct: boolean) => {
     if (!firstTap.current) {
       firstTap.current = true;
-      void recordLetterAttempt(target.letter, correct).catch(() => {});
+      void recordLetterAttempt(target.letter, correct && !hintVisible).catch(() => {});
     }
     done(correct);
   };
@@ -44,9 +46,12 @@ function LetterRound({ level, round, done, locked }: {
       <View style={styles.feature}>
         <Text style={styles.picture}>🔤</Text>
         <Text testID="letter-target" style={styles.target}>
-          {level === 3 ? target.letter.toUpperCase() : display(target.letter)}
+          {level === 3 || hintVisible ? (level === 3 ? target.letter.toUpperCase() : display(target.letter)) : "❔"}
         </Text>
       </View>
+      {level !== 3 ? <Pressable accessibilityRole="button" testID="letter-hint" onPress={() => setHintVisible(v => !v)} style={styles.hintButton}>
+        <Text style={styles.hintLabel}>{hintVisible ? "🙈" : "💡"} {hintVisible ? "Hide hint" : "Show letter hint"}</Text>
+      </Pressable> : null}
       <ReadingChoiceBoard
         choices={options}
         answer={display(target.letter)}
@@ -66,4 +71,6 @@ const styles = StyleSheet.create({
  picture: { fontSize: 52 },
  target: { fontSize: 80, fontWeight: "900", color: colors.onSurface },
  helper: { ...typography.caption, color: colors.onSurfaceMuted },
+ hintButton: { minHeight: 44, paddingHorizontal: spacing.md, justifyContent: "center", borderRadius: radius.pill, backgroundColor: colors.softBlueTint },
+ hintLabel: { ...typography.caption, color: colors.onSurface },
 });
