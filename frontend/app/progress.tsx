@@ -12,6 +12,7 @@ import { PrimaryButton } from "@/src/components/PrimaryButton";
 import { GameId, GameProgress, getProgress } from "@/src/storage/progress";
 import { colors, radius, spacing, typography, shadows } from "@/src/theme/tokens";
 import { storage } from "@/src/utils/storage";
+import { clearReadingStats, getReadingStats, type ReadingStats } from "@/src/storage/readingProgress";
 
 const ROWS: { id: GameId | "tic-tac-toe"; title: string; icon: keyof typeof MaterialCommunityIcons.glyphMap; tint: string; iconColor: string; }[] = [
   { id: "find-object", title: "Find the Object", icon: "magnify", tint: colors.softBlueTint, iconColor: "#1F6FEB" },
@@ -43,6 +44,7 @@ export default function ProgressScreen() {
   const [rows, setRows] = useState<Row[]>([]);
   const [totalStars, setTotalStars] = useState(0);
   const [totalPlayed, setTotalPlayed] = useState(0);
+  const [readingStats, setReadingStats] = useState<ReadingStats>({});
 
   const load = useCallback(async () => {
     const filled: Row[] = [];
@@ -58,6 +60,7 @@ export default function ProgressScreen() {
     setRows(filled);
     setTotalStars(stars);
     setTotalPlayed(played);
+    setReadingStats(await getReadingStats());
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -68,6 +71,7 @@ export default function ProgressScreen() {
       if (r.id === "tic-tac-toe") continue;
       await storage.removeItem(`ezra.progress.${r.id}`);
     }
+    await clearReadingStats();
     await load();
   };
 
@@ -94,6 +98,19 @@ export default function ProgressScreen() {
             </View>
           </Animated.View>
 
+          <View style={styles.readingCard} testID="letter-recognition-progress">
+            <Text style={styles.readingTitle}>🔤 Letter Practice</Text>
+            <Text style={styles.readingNote}>First-try matches, not a reading test. Try the same letters again on different days.</Text>
+            <View style={styles.letterGrid}>
+              {Object.entries(readingStats).sort(([a],[b]) => a.localeCompare(b)).map(([letter, stats]) => (
+                <View key={letter} style={styles.letterChip}>
+                  <Text style={styles.letterTitle}>{letter.toUpperCase()}</Text>
+                  <Text style={styles.letterScore}>{stats.firstTry}/{stats.attempts}</Text>
+                </View>
+              ))}
+            </View>
+            {Object.keys(readingStats).length === 0 ? <Text style={styles.rowMeta}>Play Letter Safari to see letter practice here.</Text> : null}
+          </View>
           <View style={styles.list}>
             {rows.map((r, idx) => (
               <Animated.View
@@ -182,4 +199,11 @@ const styles = StyleSheet.create({
   rowMeta: { ...typography.caption, color: colors.onSurfaceMuted },
   stars: { flexDirection: "row", gap: 2 },
   actionsWrap: { marginTop: spacing.md },
+  readingCard: { borderRadius: radius.lg, backgroundColor: colors.surfaceCard, borderWidth: 1, borderColor: colors.border, padding: spacing.md, gap: spacing.sm },
+  readingTitle: { ...typography.subtitle, color: colors.onSurface },
+  readingNote: { ...typography.caption, color: colors.onSurfaceMuted },
+  letterGrid: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
+  letterChip: { minWidth: 62, alignItems: "center", borderRadius: radius.md, backgroundColor: colors.pastelYellowTint, padding: spacing.sm },
+  letterTitle: { ...typography.subtitle, color: colors.onSurface },
+  letterScore: { ...typography.caption, color: colors.onSurfaceMuted },
 });
