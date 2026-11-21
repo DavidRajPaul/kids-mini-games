@@ -148,12 +148,10 @@ export default function ShapePuzzleScreen() {
             <QuestionText testID="target-label">{round.target.label}</QuestionText>
           </Animated.View>
 
-          <View
-            ref={silhouetteRef}
-            style={styles.silhouetteWrap}
-            onLayout={measureDropZone}
-          >
+          <View style={styles.silhouetteWrap}>
             <View
+              ref={silhouetteRef}
+              onLayout={measureDropZone}
               style={[
                 styles.silhouette,
                 { borderColor: placed ? round.target.color : colors.borderStrong },
