@@ -95,11 +95,7 @@ export function GameVoiceProvider({ children }: { children: React.ReactNode }) {
     }
   }, [language]);
 
-  return (
-    <VoiceContext.Provider value={{ language, ready, voiceNotice, setLanguage, speak, stop }}>
-      {children}
-    </VoiceContext.Provider>
-  );
+  return React.createElement(VoiceContext.Provider, { value: { language, ready, voiceNotice, setLanguage, speak, stop } }, children);
 }
 
 export function useGameSpeech(): VoiceContextValue {
