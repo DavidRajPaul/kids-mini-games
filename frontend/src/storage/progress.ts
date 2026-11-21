@@ -21,6 +21,7 @@ export type GameId =
   | "sound-detective"
   | "word-magic"
   | "tamil-vowels"
+  | "tamil-mei"
   | "tamil-sounds"
   | "tamil-words";
 
