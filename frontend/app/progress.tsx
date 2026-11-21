@@ -22,6 +22,7 @@ const ROWS: { id: GameId | "tic-tac-toe"; title: string; icon: keyof typeof Mate
   { id: "same-different", title: "Same or Different", icon: "compare", tint: colors.pastelYellowTint, iconColor: "#A88A00" },
   { id: "shape-puzzle", title: "Shape Puzzle", icon: "puzzle", tint: colors.pastelPurpleTint, iconColor: "#8E44AD" },
   { id: "tamil-vowels", title: "உயிரெழுத்து வேட்டை", icon: "alphabetical-variant", tint: colors.pastelYellowTint, iconColor: "#9B7500" },
+  { id: "tamil-mei", title: "மெய்யெழுத்து மேஜிக்", icon: "alphabetical-variant", tint: colors.pastelPinkTint, iconColor: "#B45A76" },
   { id: "tamil-sounds", title: "தமிழ் ஒலி தோட்டம்", icon: "ear-hearing", tint: colors.softGreenTint, iconColor: "#2E8B57" },
   { id: "tamil-words", title: "தமிழ் சொல் மேஜிக்", icon: "auto-fix", tint: colors.pastelPurpleTint, iconColor: "#8E44AD" },
   { id: "letter-safari", title: "Letter Safari", icon: "alphabetical", tint: colors.pastelPinkTint, iconColor: "#D9534F" },
