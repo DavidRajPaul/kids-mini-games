@@ -35,8 +35,8 @@ function GameTile({ game, index, onPress, animated }: { game: GameEntry; index: 
       <Pressable
         testID={`game-card-${game.id}`} accessibilityRole="button"
         accessibilityLabel={game.title + ". " + game.subtitle}
-        onPressIn={() => { scale.value = withSpring(0.95); }}
-        onPressOut={() => { scale.value = withSpring(1); }}
+        onPressIn={() => { if (animated) scale.value = withSpring(0.95); }}
+        onPressOut={() => { if (animated) scale.value = withSpring(1); }}
         onPress={onPress}
         style={[styles.tile, { backgroundColor: game.tint }]}
       >
@@ -88,7 +88,7 @@ export default function HomeScreen() {
           </View>
           <View style={styles.grid} testID="game-grid">
             {GAMES.map((game, index) => (
-              <View key={game.id} style={{ width: `${100 / columns}%` }}>
+              <View key={game.id} style={{ width: `${100 / columns}%` as `${number}%` }}>
                 <GameTile game={game} index={index} animated={!reduceMotion} onPress={() => open(game)} />
               </View>
             ))}
