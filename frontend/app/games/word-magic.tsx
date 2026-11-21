@@ -11,7 +11,7 @@ export default function WordMagic() {
       id="word-magic"
       title="First Word Magic"
       rounds={3}
-      instruction={(level, round) => `Which first letter makes ${wordFor(level, round).word.toUpperCase()}?`}
+      instruction={() => "Pick the missing first letter."}
       tamilInstruction={() => "செம! இப்போ ஒரு சின்ன English word பில்ட் பண்ணலாம்! முதல் letter எது?"}
     >
       {({ level, round, done, locked }) => {
