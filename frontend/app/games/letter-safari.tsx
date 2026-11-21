@@ -29,6 +29,7 @@ function LetterRound({ level, round, done, locked }: {
   level: Level; round: number; done: (correct: boolean) => void; locked: boolean;
 }) {
   const firstTap = useRef(false);
+  const hintUsed = useRef(false);
   const [hintVisible, setHintVisible] = React.useState(false);
   const target = letterFor(level, round);
   const display = (value: string) => level === 1 ? value.toUpperCase() : value;
@@ -37,7 +38,7 @@ function LetterRound({ level, round, done, locked }: {
   const choose = (correct: boolean) => {
     if (!firstTap.current) {
       firstTap.current = true;
-      void recordLetterAttempt(target.letter, correct && !hintVisible).catch(() => {});
+      void recordLetterAttempt(target.letter, correct && !hintUsed.current).catch(() => {});
     }
     done(correct);
   };
@@ -49,8 +50,8 @@ function LetterRound({ level, round, done, locked }: {
           {level === 3 || hintVisible ? (level === 3 ? target.letter.toUpperCase() : display(target.letter)) : "❔"}
         </Text>
       </View>
-      {level !== 3 ? <Pressable accessibilityRole="button" testID="letter-hint" onPress={() => setHintVisible(v => !v)} style={styles.hintButton}>
-        <Text style={styles.hintLabel}>{hintVisible ? "🙈" : "💡"} {hintVisible ? "Hide hint" : "Show letter hint"}</Text>
+      {level !== 3 ? <Pressable accessibilityRole="button" testID="letter-hint" onPress={() => { hintUsed.current = true; setHintVisible(v => !v); }} style={styles.hintButton}>
+        <LocalizedText style={styles.hintLabel} english={hintVisible ? "🙈 Hide hint" : "💡 Show letter hint"} tamil={hintVisible ? "🙈 Hint-ஐ மறை" : "💡 Hint காட்டவா?"} />
       </Pressable> : null}
       <ReadingChoiceBoard
         choices={options}
