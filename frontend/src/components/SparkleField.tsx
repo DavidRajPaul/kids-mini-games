@@ -52,7 +52,7 @@ function FloatingParticle({ item, index, active }: { item: Particle; index: numb
         withTiming(item.distance / 2, { duration: item.duration, easing: Easing.inOut(Easing.sin) }),
       ),
       -1,
-      true,
+      false,
     ));
     alpha.value = withDelay(item.delay, withRepeat(
       withSequence(
@@ -60,7 +60,7 @@ function FloatingParticle({ item, index, active }: { item: Particle; index: numb
         withTiming(0.35, { duration: item.duration, easing: Easing.inOut(Easing.quad) }),
       ),
       -1,
-      true,
+      false,
     ));
     rotation.value = withDelay(item.delay, withRepeat(
       withSequence(
@@ -68,7 +68,7 @@ function FloatingParticle({ item, index, active }: { item: Particle; index: numb
         withTiming(-12, { duration: item.duration }),
       ),
       -1,
-      true,
+      false,
     ));
     return () => {
       cancelAnimation(travel);
